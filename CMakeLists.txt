@@ -28,8 +28,10 @@ set(env_mainprogram_source
 set(sb_sandbox_lib_name sb_sandbox)
 set(sb_sandbox_lib_header_directory ./sb_sandbox)
 set(sb_sandbox_lib_header
+        sb_sandbox/sb_define.h
         sb_sandbox/sb_sandbox.h)
 set(sb_sandbox_lib_source
+        sb_sandbox/sb_imp.cpp
         sb_sandbox/sb_sandbox.cpp)
 #---------------------------------
 set( CMAKE_CXX_STANDARD 14 )

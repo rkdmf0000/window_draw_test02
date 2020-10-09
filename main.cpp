@@ -1,13 +1,6 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
-#include <iostream>
-#include <windows.h>
-#include <stdlib.h>
-#include <string.h>
-#include <tchar.h>
-#include <locale.h>
-#include <memory>
-#include <functional>
+
 
 #include <sb_sandbox.h>
 
@@ -15,61 +8,6 @@
 #define __STANDARD_BUTTON_CLICK_UP_EVENT_HANDLE_NUMBER__ 0x00f1
 #define __STANDARD_BUTTON_CLICK_DOWN_EVENT_HANDLE_NUMBER__ 0x00f2
 
-
-
-
-
-struct _SETCREATEPOSITION {
-    INT x;
-    INT y;
-    INT w;
-    INT h;
-};
-
-struct _SETCREATEOPTION {
-    wchar_t *bgColor          = L"000000";
-    wchar_t *color            = L"ffffff";
-    wchar_t *mainString       = L"Undefined text";
-    wchar_t *subString;
-    wchar_t *description;
-};
-
-struct _SETCREATEDEFAULT {
-    _SETCREATEPOSITION pos{0, 0, 0, 0};
-    HINSTANCE hinc;
-    HWND hwnd;
-
-    _SETCREATEDEFAULT(_SETCREATEPOSITION pos) : pos(pos) {
-        std::cout << "(" << this << ") --STRUCTURE DECLARED(pos)" << '\n';
-    };
-
-    _SETCREATEDEFAULT(HINSTANCE hinc) : hinc(hinc) {
-        std::cout << "(" << this << ") --STRUCTURE DECLARED(hinc)" << '\n';
-    };
-
-    _SETCREATEDEFAULT(HWND hwnd) : hwnd(hwnd) { std::cout << "(" << this << ") --STRUCTURE DECLARED(hwnd)" << '\n'; };
-
-    _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc) : pos(pos), hinc(hinc) {
-        std::cout << "(" << this << ") --STRUCTURE DECLARED(pos, hinc)" << '\n';
-    };
-
-    _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc, HWND hwnd) : pos(pos), hinc(hinc), hwnd(hwnd) {
-        std::cout << "(" << this << ") --STRUCTURE DECLARED(pos, hinc, hwnd)" << '\n';
-    };
-
-    _SETCREATEDEFAULT() { std::cout << "(" << this << ") --STRUCTURE DECLARED" << '\n'; }
-
-    ~_SETCREATEDEFAULT() { std::cout << "(" << this << ") --STRUCTURE DESTROYED" << '\n'; }
-};
-
-struct _SETCREATEVIRTUAL {
-    _SETCREATEPOSITION pos{0, 0, 0, 0};
-    _SETCREATEVIRTUAL(_SETCREATEPOSITION pos) : pos(pos) {
-        std::cout << "(" << this << ") --VIRTUAL STRUCTURE DECLARED(pos)" << '\n';
-    };
-    _SETCREATEVIRTUAL() { std::cout << "(" << this << ") --VIRTUAL STRUCTURE DECLARED" << '\n'; }
-    ~_SETCREATEVIRTUAL() { std::cout << "(" << this << ") --VIRTUAL STRUCTURE DESTROYED" << '\n'; }
-};
 
 
 
@@ -109,158 +47,12 @@ struct _SETCREATEVIRTUAL {
 
 
 
-LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
-    WORD whi = HIWORD(wParam);
-    WORD wlo = LOWORD(wParam);
-    WORD lhi = HIWORD(lParam);
-    WORD llo = LOWORD(lParam);
-
-    switch (message) {
+//LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
+//
+//};
 
 
-        case WM_LBUTTONDOWN:
-            std::cout << "========<< WM_LBUTTONDOWN "<< WM_LBUTTONDOWN << "/" << hWnd << " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_LBUTTONUP:
-            std::cout << "========<< WM_LBUTTONUP "<< WM_LBUTTONUP  << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_LBUTTONDBLCLK:
-            std::cout << "========<< WM_LBUTTONDBLCLK "<< WM_LBUTTONDBLCLK << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_MOUSEMOVE: //클라이언트영역 마우스 움직임
-//            std::cout << "<< WM_MOUSEMOVE "<< WM_MOUSEMOVE << " >>" << '\n';
-//            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-//            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_NCMOUSEMOVE: //논클라이언트영역 마우스 움직임
-//            std::cout << "<< WM_NCMOUSEMOVE "<< WM_NCMOUSEMOVE << " >>" << '\n';
-//            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-//            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_MOUSEACTIVATE:
-            std::cout << "========<< WM_MOUSEACTIVATE "<< WM_MOUSEACTIVATE << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_MOVE:
-            //std::cout << "<< WM_MOVE >>" << '\n';
-            //std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            //std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_PAINTICON:
-            std::cout << "========<< WM_PAINTICON "<< WM_PAINTICON << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_COMMAND:
-            std::cout << "========<< WM_COMMAND "<< WM_COMMAND << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_CREATE:
-            std::cout << "========<< WM_CREATE "<< WM_CREATE << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            break;
-        case WM_PAINT:
-            //PAINTSTRUCT PAINT_STRUCT_OBJECT;
-            //HDC HDC_OBJECT;
-            //Rectangle(HDC_OBJECT, 10, 10, 200, 200);
-            //ReleaseDC(hWnd, HDC_OBJECT);
-            break;
-        case WM_DESTROY:
-            std::cout << "========<< WM_DESTROY "<< WM_DESTROY << "/" << hWnd <<  " >>" << '\n';
-            std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';
-            std::cout << "lHIWORD : " << HIWORD(lParam) << " / " << "lLOWORD : " << LOWORD(lParam) << '\n';
-            PostQuitMessage(0);
-            break;
-        default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
-            break;
-    };
-    return 0;
-};
 
-
-VOID createAWindowPalette(std::unique_ptr<_SETCREATEDEFAULT> &set, LPCTSTR &lpszClassName, BOOL ImmediateExposure = 0) {
-    std::cout << "(" << &set->hwnd << ") ";
-    std::cout << "WINDOW-" << "(" << &*set << ")" << "-POS : " << set->pos.x << "/";
-    std::cout << " " << set->pos.y << "/";
-    std::cout << " " << set->pos.w << "/";
-    std::cout << " " << set->pos.h << '\n';
-
-
-    set->hwnd = CreateWindow(
-            lpszClassName,
-            _T("title"),
-            WS_OVERLAPPEDWINDOW,
-            set->pos.x, set->pos.y,
-            set->pos.w, set->pos.h,
-            NULL,
-            NULL,
-            set->hinc,
-            NULL
-    );
-
-    if (!set->hwnd) {
-        MessageBox(NULL,
-                   _T("Call to Create\"Window\" failed!"),
-                   _T("Windows Desktop Alert"),
-                   0);
-        std::cout << "(" << &set->hwnd << ") " << "--FAILURE" << '\n';
-    } else {
-        std::cout << "(" << &set->hwnd << ") " << "--OK" << "(" << set->hwnd <<  ")" << '\n';
-    };
-
-
-    if (ImmediateExposure == 1) {
-        ShowWindow(set->hwnd, 1);
-        UpdateWindow(set->hwnd);
-    };
-};
-
-
-VOID createWindowButton(std::unique_ptr<_SETCREATEDEFAULT> &set, HWND &Palette, HMENU TriggerID, BOOL ImmediateExposure = 0) {
-    std::cout << "(" << &set->hwnd << ") ";
-    std::cout << "BUTTON-" << "(" << &*set << ")" << "-POS : " << set->pos.x << "/";
-    std::cout << " " << set->pos.y << "/";
-    std::cout << " " << set->pos.w << "/";
-    std::cout << " " << set->pos.h << '\n';
-
-    set->hwnd = CreateWindow(
-            _T("BUTTON"),
-            _T("BUTTON TEXT"),
-            WS_CHILD | WS_VISIBLE,
-            set->pos.x, set->pos.y,
-            set->pos.w, set->pos.h,
-            Palette,
-            TriggerID,
-            set->hinc,
-            NULL
-    );
-
-    if (!set->hwnd) {
-        MessageBox(NULL,
-                   _T("Call to Create\"Button\" failed!"),
-                   _T("Windows Desktop Alert"),
-                   0);
-        std::cout << "(" << &set->hwnd << ") " << "--FAILURE" << '\n';
-    } else {
-        std::cout << "(" << &set->hwnd << ") " << "--OK" << '\n';
-    };
-
-
-    if (ImmediateExposure == 1) {
-        ShowWindow(set->hwnd, 1);
-        UpdateWindow(set->hwnd);
-    };
-};
 
 
 INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, INT nCmdShow) {
@@ -269,16 +61,16 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
 
+    std::cout << "VERSION : 001 " << '\n' << '\n';
     std::cout << "window-startup-hInstance:" << hInstance << "(" << &hInstance << ")" << '\n';
 
     const TCHAR szWindowClass[] = _T("DesktopApp");
     const TCHAR szTitle[] = _T("Windows Desktop Guided Tour Application");
 
-
     WNDCLASSEX TESTWNDCLASS;
     TESTWNDCLASS.cbSize = sizeof(WNDCLASSEX);
     TESTWNDCLASS.style = CS_HREDRAW | CS_VREDRAW;
-    TESTWNDCLASS.lpfnWndProc = WndProc;
+    TESTWNDCLASS.lpfnWndProc = SB_SANDBOX::IMP_FUNCTION::WndProc;
     TESTWNDCLASS.cbClsExtra = 0;
     TESTWNDCLASS.cbWndExtra = 0;
     TESTWNDCLASS.hInstance = hInstance;
@@ -299,12 +91,20 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
         std::cout << "Window register class successful!" << '\n';
     };
 
-    HWND helloPallet;
+
+
+
+
+
     LPCTSTR testClassName = _T("DesktopApp");
+
     std::unique_ptr<_SETCREATEDEFAULT> p_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{0, 0, 500, 500}, hInstance);
     std::unique_ptr<_SETCREATEDEFAULT> b_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{10, 10, 100, 50}, hInstance);
-    createAWindowPalette(p_0, testClassName ,1);
-    createWindowButton(b_0, p_0->hwnd, (HMENU) __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ ,1);
+
+    std::unique_ptr<_SETCREATEVIRTUAL> v_0 = std::make_unique<_SETCREATEVIRTUAL>(_SETCREATEPOSITION{100,100,100,50});
+
+    SB_SANDBOX::FUNCTION::createAWindowPalette(p_0, testClassName ,1);
+    SB_SANDBOX::FUNCTION::createWindowButton(b_0, p_0->hwnd, (HMENU) __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ ,1);
 
 
     MSG msg;
