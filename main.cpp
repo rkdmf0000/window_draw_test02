@@ -107,7 +107,9 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     SB_SANDBOX::FUNCTION::createClickable(v_0, 1);
 
     //SB_SANDBOX::FUNCTION::setEnvForLevel(first_ground,100);
-    first_ground->setEnvForLevel(100);
+    std::cout << "BEFORE TEST FOR LEVEL SIZE : " << first_ground->getLevelLength() << '\n';
+    first_ground->setEnvForLevel(300);
+    std::cout << "AFTER TEST FOR LEVEL SIZE : " << first_ground->getLevelLength() << '\n';
 
 
 

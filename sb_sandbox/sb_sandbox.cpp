@@ -106,14 +106,21 @@ SB_SANDBOX::GROUND::GROUND() {
 
     for(INT initializationLevelSizeIDX(0);initializationLevelSizeIDX<this->LEVEL_SIZE;++initializationLevelSizeIDX)
     {
-        std::cout << "LEVEL_SIZE Initializational IDX : " << initializationLevelSizeIDX << '\n';
+        std::cout << "LEVEL_SIZE Initializational IDX : " << initializationLevelSizeIDX << '\r';
         this->LEVEL[initializationLevelSizeIDX] = 0;
     };
+    std::cout << "\r\nLEVEL_SIZE Initializational IDX : " << "GOOD!" << '\n';
 
 };
 SB_SANDBOX::GROUND::~GROUND() {
     std::cout << "SB::SANDBOX::GROUND DESTROYED!" << '\n';
     //heep clear
     delete[] this->LEVEL;
+}
+
+VOID SB_SANDBOX::GROUND::ForceSetEnvLevelPtr(UINT *ptr, UINT size) {
+    delete[] this->LEVEL;
+    this->LEVEL = ptr;
+    this->LEVEL_SIZE = size;
 };
 
