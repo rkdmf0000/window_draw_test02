@@ -11,7 +11,6 @@ LRESULT CALLBACK SB_SANDBOX::IMP_FUNCTION::WndProc(HWND hWnd, UINT message, WPAR
 
     switch (message) {
 
-
         case WM_LBUTTONDOWN:
             std::cout << "========<< WM_LBUTTONDOWN "<< WM_LBUTTONDOWN << "/" << hWnd << " >>" << '\n';
             std::cout << "wHIWORD : " << HIWORD(wParam) << " / " << "wLOWORD : " << LOWORD(wParam) << '\n';

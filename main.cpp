@@ -4,6 +4,7 @@
 
 #include <sb_sandbox.h>
 
+
 #define __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ 0x00f0
 #define __STANDARD_BUTTON_CLICK_UP_EVENT_HANDLE_NUMBER__ 0x00f1
 #define __STANDARD_BUTTON_CLICK_DOWN_EVENT_HANDLE_NUMBER__ 0x00f2
@@ -101,10 +102,16 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     std::unique_ptr<_SETCREATEDEFAULT> p_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{0, 0, 500, 500}, hInstance);
     std::unique_ptr<_SETCREATEDEFAULT> b_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{10, 10, 100, 50}, hInstance);
 
-    std::unique_ptr<_SETCREATEVIRTUAL> v_0 = std::make_unique<_SETCREATEVIRTUAL>(_SETCREATEPOSITION{100,100,100,50});
+    std::unique_ptr<_SETCREATEVIRTUAL> v_0 = std::make_unique<_SETCREATEVIRTUAL>(_SETCREATEPOSITION{100,100,100,100});
 
     SB_SANDBOX::FUNCTION::createAWindowPalette(p_0, testClassName ,1);
     SB_SANDBOX::FUNCTION::createWindowButton(b_0, p_0->hwnd, (HMENU) __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ ,1);
+
+    SB_SANDBOX::FUNCTION::createClickable(v_0, 1);
+
+
+    //SB_SANDBOX::FUNCTION::setEnvForLevel(100);
+
 
 
     MSG msg;

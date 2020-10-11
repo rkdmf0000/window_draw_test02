@@ -74,3 +74,11 @@ VOID SB_SANDBOX::FUNCTION::createWindowButton(std::unique_ptr<_SETCREATEDEFAULT>
         UpdateWindow(set->hwnd);
     };
 };
+
+
+
+VOID SB_SANDBOX::FUNCTION::createClickable(std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure)
+{
+
+    std::cout << "hello";
+};
