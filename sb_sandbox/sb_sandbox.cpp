@@ -79,6 +79,41 @@ VOID SB_SANDBOX::FUNCTION::createWindowButton(std::unique_ptr<_SETCREATEDEFAULT>
 
 VOID SB_SANDBOX::FUNCTION::createClickable(std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure)
 {
-
-    std::cout << "hello";
+    std::cout << __FUNCTION__ << " activated" << '\n';
 };
+
+
+VOID SB_SANDBOX::GROUND::setEnvForLevel(UINT maxIndex)
+{
+    SB_SANDBOX::FUNCTION::setEnvForLevel(this, maxIndex);
+};
+
+UINT* SB_SANDBOX::GROUND::getLevel()
+{
+    return this->LEVEL;
+};
+UINT SB_SANDBOX::GROUND::getLevelLength()
+{
+    return this->LEVEL_SIZE;
+    //return static_cast<UINT>(sizeof(this->LEVEL) / sizeof(*this->LEVEL));
+}
+
+SB_SANDBOX::GROUND::GROUND() {
+    std::cout << "SB::SANDBOX::GROUND CREATED!" << '\n';
+    this->LEVEL_SIZE = 255;
+    this->LEVEL = new UINT[this->LEVEL_SIZE];
+    //UINT dummyArray[];
+
+    for(INT initializationLevelSizeIDX(0);initializationLevelSizeIDX<this->LEVEL_SIZE;++initializationLevelSizeIDX)
+    {
+        std::cout << "LEVEL_SIZE Initializational IDX : " << initializationLevelSizeIDX << '\n';
+        this->LEVEL[initializationLevelSizeIDX] = 0;
+    };
+
+};
+SB_SANDBOX::GROUND::~GROUND() {
+    std::cout << "SB::SANDBOX::GROUND DESTROYED!" << '\n';
+    //heep clear
+    delete[] this->LEVEL;
+};
+

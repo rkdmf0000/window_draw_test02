@@ -48,13 +48,6 @@
 
 
 
-//LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam) {
-//
-//};
-
-
-
-
 
 INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, INT nCmdShow) {
     AllocConsole();
@@ -97,6 +90,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 
 
 
+
     LPCTSTR testClassName = _T("DesktopApp");
 
     std::unique_ptr<_SETCREATEDEFAULT> p_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{0, 0, 500, 500}, hInstance);
@@ -107,10 +101,13 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     SB_SANDBOX::FUNCTION::createAWindowPalette(p_0, testClassName ,1);
     SB_SANDBOX::FUNCTION::createWindowButton(b_0, p_0->hwnd, (HMENU) __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ ,1);
 
+    SB_SANDBOX::GROUND *first_ground;
+    first_ground = new SB_SANDBOX::GROUND();
+
     SB_SANDBOX::FUNCTION::createClickable(v_0, 1);
 
-
-    //SB_SANDBOX::FUNCTION::setEnvForLevel(100);
+    //SB_SANDBOX::FUNCTION::setEnvForLevel(first_ground,100);
+    first_ground->setEnvForLevel(100);
 
 
 
