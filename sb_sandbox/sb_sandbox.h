@@ -40,6 +40,7 @@ namespace SB_SANDBOX
         UINT* getLevel();
         UINT getLevelLength();
         VOID setEnvForLevel(UINT maxIndex);
+        VOID ForceSetEnvLevelPtr(UINT* ptr, UINT size);
         GROUND();
     };
 
