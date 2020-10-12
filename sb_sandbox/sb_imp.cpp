@@ -2,12 +2,35 @@
 // Created by my_fl on 2020-10-09.
 //
 #include "sb_sandbox.h"
-LRESULT CALLBACK SB_SANDBOX::IMP_FUNCTION::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK SB_SANDBOX::GROUND::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     WORD whi = HIWORD(wParam);
     WORD wlo = LOWORD(wParam);
     WORD lhi = HIWORD(lParam);
     WORD llo = LOWORD(lParam);
+
+    SB_SANDBOX::GROUND *pThis;
+    if (message == WM_NCCREATE)
+    {
+        pThis = static_cast<SB_SANDBOX::GROUND*>(reinterpret_cast<CREATESTRUCT*>(lParam)->lpCreateParams);
+
+        SetLastError(0);
+        if (!SetWindowLongPtr(hWnd, GWL_USERDATA, reinterpret_cast<LONG_PTR>(pThis)))
+        {
+            if (GetLastError() != 0)
+                return FALSE;
+        }
+    }
+    else
+    {
+        pThis = reinterpret_cast<SB_SANDBOX::GROUND*>(GetWindowLongPtr(hWnd, GWL_USERDATA));
+    };
+
+    if (pThis)
+    {
+        // use pThis->member as needed...
+        std::cout << "==========================================loop!" << '\n';
+    };
+
 
     switch (message) {
 
@@ -77,5 +100,10 @@ LRESULT CALLBACK SB_SANDBOX::IMP_FUNCTION::WndProc(HWND hWnd, UINT message, WPAR
             return DefWindowProc(hWnd, message, wParam, lParam);
             break;
     };
+    return 0;
+};
+
+LRESULT CALLBACK SB_SANDBOX::IMP_FUNCTION::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
     return 0;
 };

@@ -34,13 +34,21 @@ namespace SB_SANDBOX
     {
         ~GROUND();
     private:
+        //_SETCREATEVIRTUAL *MAP;
         UINT *LEVEL;
+        UINT *LEVEL_GROUP;
         UINT LEVEL_SIZE;
+        UINT LEVEL_STACK;
     public:
+        UINT testint=0;
         UINT* getLevel();
+        UINT* getLevelGroup();
         UINT getLevelLength();
         VOID setEnvForLevel(UINT maxIndex);
         VOID ForceSetEnvLevelPtr(UINT* ptr, UINT size);
+        VOID insertVirtualObjectByLevel(_SETCREATEVIRTUAL* objptr, UINT levelNumber);
+        _SETCREATEPOSITION searchOutProperLevelNumber(_SETCREATEPOSITION &pos);
+        static LRESULT CALLBACK WndProc(_In_ HWND hWnd, _In_ UINT message, _In_ WPARAM wParam, _In_ LPARAM lParam);
         GROUND();
     };
 
@@ -53,12 +61,12 @@ namespace SB_SANDBOX
     {
         //Set object row index
         VOID setEnvForLevel(SB_SANDBOX::GROUND *ground, INT maxIndex);
+        //make virtual button
+        VOID createClickable(SB_SANDBOX::GROUND *ground, std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure = 0);
         //make up a window
         VOID createAWindowPalette(std::unique_ptr<_SETCREATEDEFAULT> &set, LPCTSTR &lpszClassName, BOOL ImmediateExposure = 0);
         //make up a button as window
         VOID createWindowButton(std::unique_ptr<_SETCREATEDEFAULT> &set, HWND &Palette, HMENU TriggerID, BOOL ImmediateExposure = 0);
-        //make virtual button
-        VOID createClickable(std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure = 0);
     };
 };
 

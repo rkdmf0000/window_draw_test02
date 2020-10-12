@@ -77,10 +77,7 @@ VOID SB_SANDBOX::FUNCTION::createWindowButton(std::unique_ptr<_SETCREATEDEFAULT>
 
 
 
-VOID SB_SANDBOX::FUNCTION::createClickable(std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure)
-{
-    std::cout << __FUNCTION__ << " activated" << '\n';
-};
+
 
 
 VOID SB_SANDBOX::GROUND::setEnvForLevel(UINT maxIndex)
@@ -92,22 +89,27 @@ UINT* SB_SANDBOX::GROUND::getLevel()
 {
     return this->LEVEL;
 };
+UINT* SB_SANDBOX::GROUND::getLevelGroup()
+{
+    return this->LEVEL_GROUP;
+};
 UINT SB_SANDBOX::GROUND::getLevelLength()
 {
     return this->LEVEL_SIZE;
-    //return static_cast<UINT>(sizeof(this->LEVEL) / sizeof(*this->LEVEL));
 }
 
 SB_SANDBOX::GROUND::GROUND() {
     std::cout << "SB::SANDBOX::GROUND CREATED!" << '\n';
-    this->LEVEL_SIZE = 255;
-    this->LEVEL = new UINT[this->LEVEL_SIZE];
-    //UINT dummyArray[];
+    this->LEVEL_SIZE    = 255;
+    this->LEVEL_STACK   = 0;
+    this->LEVEL         = new UINT[this->LEVEL_SIZE];
+    this->LEVEL_GROUP   = new UINT[this->LEVEL_SIZE];
 
     for(INT initializationLevelSizeIDX(0);initializationLevelSizeIDX<this->LEVEL_SIZE;++initializationLevelSizeIDX)
     {
         std::cout << "LEVEL_SIZE Initializational IDX : " << initializationLevelSizeIDX << '\r';
         this->LEVEL[initializationLevelSizeIDX] = 0;
+        this->LEVEL_GROUP[initializationLevelSizeIDX] = 0;
     };
     std::cout << "\r\nLEVEL_SIZE Initializational IDX : " << "GOOD!" << '\n';
 
@@ -116,11 +118,27 @@ SB_SANDBOX::GROUND::~GROUND() {
     std::cout << "SB::SANDBOX::GROUND DESTROYED!" << '\n';
     //heep clear
     delete[] this->LEVEL;
+    delete[] this->LEVEL_GROUP;
+    //delete[] this->MAP;
 }
 
 VOID SB_SANDBOX::GROUND::ForceSetEnvLevelPtr(UINT *ptr, UINT size) {
+    std::cout << __FUNCTION__ << " ACTIVATED!" << '\n';
     delete[] this->LEVEL;
     this->LEVEL = ptr;
     this->LEVEL_SIZE = size;
+}
+VOID SB_SANDBOX::FUNCTION::createClickable(SB_SANDBOX::GROUND *ground, std::unique_ptr<_SETCREATEVIRTUAL> &set, BOOL ImmediateExposure)
+{
+    std::cout << __FUNCTION__ << " ACTIVATED!" << '\n';
+    ground->insertVirtualObjectByLevel(set.get(),1);
 };
+VOID SB_SANDBOX::GROUND::insertVirtualObjectByLevel(_SETCREATEVIRTUAL* objptr, UINT levelNumber) {
+    UINT uptrint = (UINT)objptr;
+    std::cout << __FUNCTION__ << " Pointer Number:" << uptrint << '\n';
+    this->LEVEL[this->LEVEL_STACK] = uptrint;
+    this->LEVEL_GROUP[this->LEVEL_STACK] = levelNumber;
+    ++this->LEVEL_STACK;
+}
+
 

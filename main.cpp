@@ -64,7 +64,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     WNDCLASSEX TESTWNDCLASS;
     TESTWNDCLASS.cbSize = sizeof(WNDCLASSEX);
     TESTWNDCLASS.style = CS_HREDRAW | CS_VREDRAW;
-    TESTWNDCLASS.lpfnWndProc = SB_SANDBOX::IMP_FUNCTION::WndProc;
+    TESTWNDCLASS.lpfnWndProc = SB_SANDBOX::GROUND::WndProc;
     TESTWNDCLASS.cbClsExtra = 0;
     TESTWNDCLASS.cbWndExtra = 0;
     TESTWNDCLASS.hInstance = hInstance;
@@ -86,11 +86,6 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     };
 
 
-
-
-
-
-
     LPCTSTR testClassName = _T("DesktopApp");
 
     std::unique_ptr<_SETCREATEDEFAULT> p_0 = std::make_unique<_SETCREATEDEFAULT>(_SETCREATEPOSITION{0, 0, 500, 500}, hInstance);
@@ -104,7 +99,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     SB_SANDBOX::GROUND *first_ground;
     first_ground = new SB_SANDBOX::GROUND();
 
-    SB_SANDBOX::FUNCTION::createClickable(v_0, 1);
+    SB_SANDBOX::FUNCTION::createClickable(first_ground, v_0, 1);
 
     //SB_SANDBOX::FUNCTION::setEnvForLevel(first_ground,100);
     std::cout << "BEFORE TEST FOR LEVEL SIZE : " << first_ground->getLevelLength() << '\n';
