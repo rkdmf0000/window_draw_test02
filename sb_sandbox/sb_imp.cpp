@@ -28,7 +28,7 @@ LRESULT CALLBACK SB_SANDBOX::GROUND::WndProc(HWND hWnd, UINT message, WPARAM wPa
     if (pThis)
     {
         // use pThis->member as needed...
-        std::cout << "==========================================loop!" << '\n';
+        std::cout << "==========================================loop!2" << '\n';
     };
 
 
