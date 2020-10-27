@@ -36,7 +36,7 @@ add_executable(${PROJECT_NAME} ${env_mainline_program} ${env_mainprogram_header}
 #---------------------------------
 target_include_directories(${PROJECT_NAME} PRIVATE ${option_sb_sandbox_lib_header_directory})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${option_sb_sandbox_lib_name})
-message(status ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_header_directory})
-message(status ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_name})
+message(STATUS ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_header_directory})
+message(STATUS ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_name})
 #---------------------------------
 
