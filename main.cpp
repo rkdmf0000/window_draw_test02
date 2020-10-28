@@ -22,6 +22,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 
     SB_SANDBOX::client* test_client = new SB_SANDBOX::client(hInstance);
 
+
     test_client->initApp();
     test_client->initInstance();
     test_client->run();
