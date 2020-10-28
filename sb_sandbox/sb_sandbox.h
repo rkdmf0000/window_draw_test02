@@ -10,7 +10,9 @@
 
 namespace SB_SANDBOX
 {
-
+    //------------------
+    //winApp
+    //------------------
     class winApp
     {
     protected:
@@ -22,14 +24,37 @@ namespace SB_SANDBOX
     public:
     };
 
+    //------------------
+    //objectLoader
+    //------------------
+    class objectLoader
+    {
 
+    protected:
+    private:
+        INT_PTR* collector;
+        WORD collectorLength;
+
+    public:
+        objectLoader();
+        ~objectLoader();
+        VOID load();
+    };
+    //------------------
+    //UIFeedback
+    //------------------
     struct UIFeedback
     {
         static FLOAT mouseDefaultTick;
+        static BOOL mouseMOVE;
         static UINT mouseX;
         static UINT mouseVX;
+        static UINT mouseVXF;
         static UINT mouseY;
         static UINT mouseVY;
+        static UINT mouseVYF;
+        static UINT mouseVTICK;
+
 
         static UINT mouseUP;
         static UINT mouseDown;
@@ -42,15 +67,19 @@ namespace SB_SANDBOX
         static UINT mouseIsClicked;
 
     };
-
+    //------------------
+    //DCTOOLSET
+    //------------------
     namespace DCTOOLSET
     {
         VOID drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LPCTSTR text);
     };
-
+    //------------------
+    //client
+    //------------------
     class client : public winApp, public UIFeedback
     {
-        ~client();
+
     protected:
     private:
         static LRESULT CALLBACK privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -65,13 +94,16 @@ namespace SB_SANDBOX
         UINT frameCnt;
         FLOAT frame;
 
+        //SB_SANDBOX::objectLoader* loader;
 
         static LRESULT CALLBACK publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
         LPCTSTR& get_lpClassName();
         LPCTSTR& get_lpWndName();
         HWND& get_wndHandle();
         HINSTANCE& get_processHandle();
+
         explicit client(HINSTANCE hin);
+        ~client();
 
         VOID initApp();
         VOID initInstance();

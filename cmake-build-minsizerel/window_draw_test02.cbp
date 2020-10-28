@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="window_draw_test02"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\sb_sandbox\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="window_draw_test02">
+				<Option output="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/window_draw_test02.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel"/>
+				<Option object_output="./"/>
+				<Option type="0"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="E:/develop_project/cpp/test/window_draw_test02/./sb_sandbox"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/i686-w64-mingw32"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/../../../../i686-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 window_draw_test02"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="window_draw_test02/fast">
+				<Option output="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/window_draw_test02.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel"/>
+				<Option object_output="./"/>
+				<Option type="0"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="E:/develop_project/cpp/test/window_draw_test02/./sb_sandbox"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/i686-w64-mingw32"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/../../../../i686-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 window_draw_test02/fast"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sb_sandbox">
+				<Option output="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/sb_sandbox.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/i686-w64-mingw32"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/../../../../i686-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 sb_sandbox"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="sb_sandbox/fast">
+				<Option output="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/sb_sandbox.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/i686-w64-mingw32"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include/c++/backward"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="A:/mingw_w64/mingw32/bin/../lib/gcc/i686-w64-mingw32/8.1.0/../../../../i686-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 sb_sandbox/fast"/>
+					<CompileFile command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="A:/mingw_w64/mingw32/bin/mingw32-make.exe -f &quot;E:/develop_project/cpp/test/window_draw_test02/cmake-build-minsizerel/sb_sandbox/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/main.cpp">
+			<Option target="window_draw_test02"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_client.cpp">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_define.h">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_env.cpp">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_imp.cpp">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_sandbox.cpp">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/sb_sandbox.h">
+			<Option target="sb_sandbox"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="E:/develop_project/cpp/test/window_draw_test02/sb_sandbox/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\sb_sandbox\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
