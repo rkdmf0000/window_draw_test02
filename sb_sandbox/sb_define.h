@@ -8,11 +8,18 @@
 #include <iostream>
 #include <windows.h>
 #include <stdlib.h>
+
 #include <string.h>
 #include <tchar.h>
 #include <locale.h>
 #include <memory>
 #include <functional>
+
+#include <vector>
+
+#include <ctime>
+
+#include <chrono>
 
 namespace SB_SANDBOX {
     struct _SETCREATEPOSITION {
@@ -32,26 +39,26 @@ namespace SB_SANDBOX {
 
     struct _SETCREATEDEFAULT {
         _SETCREATEPOSITION pos{0, 0, 0, 0};
-        HINSTANCE hinc;
-        HWND hwnd;
+        HINSTANCE hinc{};
+        HWND hwnd{};
 
-        _SETCREATEDEFAULT(_SETCREATEPOSITION pos) : pos(pos) {
+        explicit _SETCREATEDEFAULT(_SETCREATEPOSITION pos) : pos(pos) {
             std::cout << "(" << this << ") --STRUCTURE DECLARED(pos)" << '\n';
         };
 
-        _SETCREATEDEFAULT(HINSTANCE hinc) : hinc(hinc) {
+        explicit _SETCREATEDEFAULT(HINSTANCE hinc) : hinc(hinc) {
             std::cout << "(" << this << ") --STRUCTURE DECLARED(hinc)" << '\n';
         };
 
-        _SETCREATEDEFAULT(HWND hwnd) : hwnd(hwnd) {
+        explicit _SETCREATEDEFAULT(HWND hwnd) : hwnd(hwnd) {
             std::cout << "(" << this << ") --STRUCTURE DECLARED(hwnd)" << '\n';
         };
 
-        _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc) : pos(pos), hinc(hinc) {
+        explicit _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc) : pos(pos), hinc(hinc) {
             std::cout << "(" << this << ") --STRUCTURE DECLARED(pos, hinc)" << '\n';
         };
 
-        _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc, HWND hwnd) : pos(pos), hinc(hinc), hwnd(hwnd) {
+        explicit _SETCREATEDEFAULT(_SETCREATEPOSITION pos, HINSTANCE hinc, HWND hwnd) : pos(pos), hinc(hinc), hwnd(hwnd) {
             std::cout << "(" << this << ") --STRUCTURE DECLARED(pos, hinc, hwnd)" << '\n';
         };
 
@@ -75,4 +82,6 @@ namespace SB_SANDBOX {
 };
 
 
+
 #endif //WINDOW_DRAW_TEST02_SB_DEFINE_H
+

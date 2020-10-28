@@ -1,0 +1,2 @@
+A:\mingw_w64\mingw32\bin\ar.exe qc sb_sandbox.a  CMakeFiles/sb_sandbox.dir/sb_imp.cpp.obj CMakeFiles/sb_sandbox.dir/sb_env.cpp.obj CMakeFiles/sb_sandbox.dir/sb_sandbox.cpp.obj CMakeFiles/sb_sandbox.dir/sb_client.cpp.obj
+A:\mingw_w64\mingw32\bin\ranlib.exe sb_sandbox.a

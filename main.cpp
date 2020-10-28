@@ -16,11 +16,12 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
 
-    std::cout << "VERSION : 002 " << '\n' << '\n';
+    std::cout << "VERSION : 003 " << '\n' << '\n';
     std::cout << "window-startup-hInstance:" << hInstance << "(" << &hInstance << ")" << '\n';
 
 
     SB_SANDBOX::client* test_client = new SB_SANDBOX::client(hInstance);
+
 
     test_client->initApp();
     test_client->initInstance();
@@ -28,6 +29,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
 
     return 0;
 };
+
 
 
 

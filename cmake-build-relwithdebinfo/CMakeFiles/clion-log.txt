@@ -1,0 +1,12 @@
+"E:\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=RelWithDebInfo -G "CodeBlocks - MinGW Makefiles" E:\develop_project\cpp\test\window_draw_test02
+-- NOT USING A UNICODE
+-- Set library prefix
+-- Set main program env variable
+-- Load sb_sandbox library
+-- Set sb_sandbox program env variable
+-- Add main program or libraries
+-- window_draw_test02--PRIVATE--./sb_sandbox
+-- window_draw_test02--PRIVATE--sb_sandbox
+-- Configuring done
+-- Generating done
+-- Build files have been written to: E:/develop_project/cpp/test/window_draw_test02/cmake-build-relwithdebinfo

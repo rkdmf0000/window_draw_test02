@@ -2,29 +2,85 @@
 // Created by my_fl on 2020-10-13.
 //
 #include "sb_sandbox.h"
+
 //------------------------------------------------------------------------------------------------
 //class : winApp
 //------------------------------------------------------------------------------------------------
 
+FLOAT SB_SANDBOX::UIFeedback::mouseDefaultTick = 0.041f;
 
+BOOL SB_SANDBOX::UIFeedback::mouseMOVE = FALSE;
+UINT SB_SANDBOX::UIFeedback::mouseX = 0;
+UINT SB_SANDBOX::UIFeedback::mouseVX = 0;
+UINT SB_SANDBOX::UIFeedback::mouseVXF = 0;
+
+UINT SB_SANDBOX::UIFeedback::mouseY = 0;
+UINT SB_SANDBOX::UIFeedback::mouseVY = 0;
+UINT SB_SANDBOX::UIFeedback::mouseVYF = 0;
+
+UINT SB_SANDBOX::UIFeedback::mouseVTICK = 100;
+
+UINT SB_SANDBOX::UIFeedback::mouseUP = 0;
+UINT SB_SANDBOX::UIFeedback::mouseDown = 0;
+UINT SB_SANDBOX::UIFeedback::mouseLUP = 0;
+UINT SB_SANDBOX::UIFeedback::mouseLDown = 0;
+UINT SB_SANDBOX::UIFeedback::mouseRUP = 0;
+UINT SB_SANDBOX::UIFeedback::mouseRDown = 0;
+UINT SB_SANDBOX::UIFeedback::mouseIsClicked = 0;
+
+INT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
+
+
+LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    return SB_SANDBOX::client::privateWndProc(hWnd, uMsg, wParam, lParam);
+}
 
 LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch (uMsg) {
-        case WM_NCCREATE:{
-            //SB_SANDBOX::client* convd_self = static_cast<SB_SANDBOX::client*>(self);
+    switch (uMsg)
+    {
+        //--------------------
+        case WM_MOUSEMOVE:
+            SB_SANDBOX::client::mouseMOVE   = TRUE;
+            SB_SANDBOX::client::mouseX      = LOWORD(lParam);
+            SB_SANDBOX::client::mouseY      = HIWORD(lParam);
+            break;
+        case WM_LBUTTONUP:
+            SB_SANDBOX::client::mouseUP = 1;
+            SB_SANDBOX::client::mouseDown = 0;
+            break;
+        case WM_LBUTTONDOWN:
+            SB_SANDBOX::client::mouseUP = 0;
+            SB_SANDBOX::client::mouseDown = 1;
+            break;
+        case WM_LBUTTONDBLCLK:
+            break;
+        //--------------------
+        case WM_RBUTTONUP:
+            break;
+        case WM_RBUTTONDOWN:
+            break;
+        case WM_RBUTTONDBLCLK:
+            break;
+        //--------------------
+        case WM_MBUTTONUP:
+            break;
+        case WM_MBUTTONDOWN:
+            break;
+        //--------------------
+        case WM_MOUSEWHEEL:
+            break;
+        //--------------------
+
+        case WM_CREATE:
+            std::cout << "it was good bitch" << '\n';
+            break;
+        case WM_NCCREATE:
             std::cout << "is good bitch" << '\n';
-        };
             break;
     };
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-
-LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    std::cout << "long:" << GetWindowLongPtr(hWnd, GWL_USERDATA) << '\n';
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
-    //SB_SANDBOX::client* me = reinterpret_cast<SB_SANDBOX::client*>(GetWindowLongPtr(hWnd, GWL_USERDATA));
-    //return me->privateWndProc(hWnd, uMsg, wParam, lParam);
 }
 
 VOID SB_SANDBOX::client::initApp() {
@@ -60,16 +116,70 @@ VOID SB_SANDBOX::client::initInstance()
     UpdateWindow(this->get_wndHandle());
 };
 
-INT CALLBACK SB_SANDBOX::client::run() {
+INT CALLBACK SB_SANDBOX::client::run()
+{
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
+        ++LIMITOVERFLOWFLAGINT;
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+        this->afterMessageDispatch();
     }
     return (int) msg.wParam;
 }
 
 
+VOID SB_SANDBOX::client::afterMessageDispatch()
+{
+    //get frame
+    UINT currentTime = GetTickCount();
+    this->frameBegin = (this->frameBegin == 0 ? GetTickCount() : this->frameBegin);
+    UINT runtime = (currentTime - this->frameBegin);
+    ++this->frameCnt;
+
+    //mouse vector
+    this->mouseVX = this->mouseX - this->mouseVXF;
+    this->mouseVY = this->mouseY - this->mouseVYF;
+
+
+    printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\r"
+        ,this->LIMITOVERFLOWFLAGINT
+        ,this->frame
+        ,(this->mouseMOVE ? 1 : 0)
+        ,this->mouseX
+        ,this->mouseVX
+        ,this->mouseY
+        ,this->mouseVY
+    );
+
+
+    //1 sec per tick times
+    if (runtime % this->mouseVTICK == 0)
+    {
+
+        this->mouseVXF = this->mouseX;
+        this->mouseVYF = this->mouseY;
+    };
+
+    //frame condition
+    if (runtime > 1000)
+    {
+        this->frame = (this->frameCnt*1000.0)/(currentTime - this->frameEnd);
+        this->frameEnd = currentTime;
+        this->frameBegin = 0;
+        this->frameCnt = 0;
+
+        this->mouseMOVE = FALSE;
+    }
+
+    //top pined set
+    ::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    ::ShowWindow(this->get_wndHandle(), SW_NORMAL);
+
+    //force update wm_paint
+    InvalidateRect(this->get_wndHandle(),NULL,TRUE);
+    //UpdateWindow(this->get_wndHandle());
+};
 
 
 
@@ -77,31 +187,67 @@ INT CALLBACK SB_SANDBOX::client::run() {
 //class : client
 //------------------------------------------------------------------------------------------------
 SB_SANDBOX::client::client(HINSTANCE hin) {
-    const TCHAR szWindowClass[] = _T("DesktopApp");
-    const TCHAR szTitle[] = _T("Windows Desktop Guided Tour Application");
-    LPCTSTR testClassName = szWindowClass;
+    LPCTSTR szWindowClass   = _T("DesktopApp");
+    LPCTSTR szTitle         = _T("Window game interface test");
+
+
 
     this->lpClassName = szWindowClass;
     this->lpWndName = szTitle;
     this->processHandle = hin;
+
+    this->frameBegin = 0;
+    this->frameEnd = 0;
+    this->frameCnt = 0;
+    this->frame = 0;
+
+    //this->loader = new objectLoader();
+
 };
 
 SB_SANDBOX::client::~client() {
-
-}
+    //delete this->loader;
+};
 
 LPCTSTR &SB_SANDBOX::client::get_lpClassName() {
     return this->lpClassName;
-}
+};
 
 LPCTSTR &SB_SANDBOX::client::get_lpWndName() {
     return this->lpWndName;
-}
+};
 
 HWND &SB_SANDBOX::client::get_wndHandle() {
     return this->wndHandle;
-}
+};
 
 HINSTANCE &SB_SANDBOX::client::get_processHandle() {
     return this->processHandle;
+};
+
+//------------------------------------------------------------------------------------------------
+//class : DCTOOLSET
+//------------------------------------------------------------------------------------------------
+VOID SB_SANDBOX::DCTOOLSET::drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LPCTSTR text) {
+    SetTextColor(hdc,RGB(255,0,0));
+    SetBkColor(hdc,RGB(0,255,0));
+    DrawText(hdc, text,-1,&rect,DT_LEFT);
+};
+
+//------------------------------------------------------------------------------------------------
+//class : objectLoader
+//------------------------------------------------------------------------------------------------
+
+SB_SANDBOX::objectLoader::objectLoader()
+{
+    std::cout << "- - Loader online" << '\n';
+};
+SB_SANDBOX::objectLoader::~objectLoader()
+{
+    delete this->collector;
+    std::cout << "- - Loader offline" << '\n';
+};
+VOID SB_SANDBOX::objectLoader::load()
+{
+    std::cout << "- - Loader running on load" << '\n';
 };
