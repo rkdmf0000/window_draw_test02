@@ -1,3 +1,0 @@
-"E:\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\window_draw_test02.dir/objects.a
-A:\mingw_w64\mingw32\bin\ar.exe cr CMakeFiles\window_draw_test02.dir/objects.a @CMakeFiles\window_draw_test02.dir\objects1.rsp
-A:\mingw_w64\mingw32\bin\g++.exe   -mwindows -Wl,--whole-archive CMakeFiles\window_draw_test02.dir/objects.a -Wl,--no-whole-archive  -o window_draw_test02.exe -Wl,--out-implib,libwindow_draw_test02.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\window_draw_test02.dir\linklibs.rsp
