@@ -114,10 +114,17 @@ VOID SB_SANDBOX::client::initInstance()
     this->wndHandle = CreateWindow(this->get_lpClassName(), this->get_lpWndName(), WS_OVERLAPPED, CW_USEDEFAULT, CW_USEDEFAULT, 500, 500, nullptr, 0, this->get_processHandle(), 0);
     ShowWindow(this->get_wndHandle(),1);
     UpdateWindow(this->get_wndHandle());
+
+    this->clientDC = GetDC(this->wndHandle);
 };
 
 INT CALLBACK SB_SANDBOX::client::run()
 {
+    if (this->clientBootFn == NULL)
+    {
+        std::cout << "CLIENT BOOT NOT DEFINED!" << '\n';
+        return 0;
+    };
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
         ++LIMITOVERFLOWFLAGINT;
@@ -141,17 +148,11 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     this->mouseVX = this->mouseX - this->mouseVXF;
     this->mouseVY = this->mouseY - this->mouseVYF;
 
-
-    printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\r"
-        ,this->LIMITOVERFLOWFLAGINT
-        ,this->frame
-        ,(this->mouseMOVE ? 1 : 0)
-        ,this->mouseX
-        ,this->mouseVX
-        ,this->mouseY
-        ,this->mouseVY
-    );
-
+    if (this->isBootedClient == FALSE)
+    {
+        this->getClientBootFn()(this->loader); //immediately execution
+        this->isBootedClient = TRUE;
+    }
 
     //1 sec per tick times
     if (runtime % this->mouseVTICK == 0)
@@ -161,9 +162,24 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
         this->mouseVYF = this->mouseY;
     };
 
+
+
+
     //frame condition
     if (runtime > 1000)
     {
+        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\r"
+            ,this->LIMITOVERFLOWFLAGINT
+            ,this->frame
+            ,(this->mouseMOVE ? 1 : 0)
+            ,this->mouseX
+            ,this->mouseVX
+            ,this->mouseY
+            ,this->mouseVY
+        );
+
+
+
         this->frame = (this->frameCnt*1000.0)/(currentTime - this->frameEnd);
         this->frameEnd = currentTime;
         this->frameBegin = 0;
@@ -190,8 +206,6 @@ SB_SANDBOX::client::client(HINSTANCE hin) {
     LPCTSTR szWindowClass   = _T("DesktopApp");
     LPCTSTR szTitle         = _T("Window game interface test");
 
-
-
     this->lpClassName = szWindowClass;
     this->lpWndName = szTitle;
     this->processHandle = hin;
@@ -201,12 +215,12 @@ SB_SANDBOX::client::client(HINSTANCE hin) {
     this->frameCnt = 0;
     this->frame = 0;
 
-    //this->loader = new objectLoader();
 
+    this->loader = new objectLoader();
 };
 
 SB_SANDBOX::client::~client() {
-    //delete this->loader;
+    delete this->loader;
 };
 
 LPCTSTR &SB_SANDBOX::client::get_lpClassName() {
@@ -223,6 +237,15 @@ HWND &SB_SANDBOX::client::get_wndHandle() {
 
 HINSTANCE &SB_SANDBOX::client::get_processHandle() {
     return this->processHandle;
+}
+
+VOID SB_SANDBOX::client::setClientBootFn(std::function<void(SB_SANDBOX::objectLoader* loader)> fn) {
+    this->clientBootFn = fn;
+}
+
+//it is must be returned callable!
+std::function<void(SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getClientBootFn() {
+    return this->clientBootFn;
 };
 
 //------------------------------------------------------------------------------------------------

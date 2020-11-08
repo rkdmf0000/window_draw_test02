@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-project(window_draw_test02)
+project(GAMEINTERFACETEST)
 #---------------------------------
 #if(WIN32)
 #        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
