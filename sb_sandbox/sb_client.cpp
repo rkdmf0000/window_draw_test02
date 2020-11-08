@@ -145,12 +145,13 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     ++this->frameCnt;
 
     //mouse vector
-    this->mouseVX = this->mouseX - this->mouseVXF;
-    this->mouseVY = this->mouseY - this->mouseVYF;
+    this->mouseVX = this->mouseVXF - 250;
+    this->mouseVY = this->mouseVYF - 250;
+
 
     if (this->isBootedClient == FALSE)
     {
-        this->getClientBootFn()(this->loader); //immediately execution
+        this->getClientBootFn()(this->loader); //immediately execution / 그냥 혹시 될까 싶어서 붙였는데 진짜 되넹ㅋㅋ
         this->isBootedClient = TRUE;
     }
 
@@ -168,7 +169,7 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     //frame condition
     if (runtime > 1000)
     {
-        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\r"
+        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\n"
             ,this->LIMITOVERFLOWFLAGINT
             ,this->frame
             ,(this->mouseMOVE ? 1 : 0)
@@ -264,6 +265,8 @@ VOID SB_SANDBOX::DCTOOLSET::drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LP
 SB_SANDBOX::objectLoader::objectLoader()
 {
     std::cout << "- - Loader online" << '\n';
+    this->collectorLength = 0;
+    this->collector = new INT_PTR[0];
 };
 SB_SANDBOX::objectLoader::~objectLoader()
 {
@@ -274,3 +277,46 @@ VOID SB_SANDBOX::objectLoader::load()
 {
     std::cout << "- - Loader running on load" << '\n';
 };
+
+//TODO : 이거 아직 미완성임 이거 해야함 ㅋㅋ
+template<typename _t>
+VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
+{
+
+    unsigned int length = this->collectorLength;
+    INT_PTR *dummy = new INT_PTR[length + 1];
+    if (length != 0)
+    {
+        for(int i(0); i < length; ++i)
+        {
+            std::cout << __FUNCTION__ << " backup :" << i << "/" << reinterpret_cast<INT_PTR>(this->collector+i) << '\n';
+            dummy[i] = reinterpret_cast<INT_PTR>(this->collector+i);
+        };
+    }
+
+    delete this->collector;
+
+    this->collector = dummy;
+    this->collector[length+1] = reinterpret_cast<INT_PTR>(data);
+    ++this->collectorLength;
+
+
+}
+
+VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int testInteger)
+{
+    this->resourceControl<int>(&testInteger);
+}
+
+VOID SB_SANDBOX::objectLoader::printCollectorPtr() {
+    unsigned int length = this->collectorLength;
+    for (int i(0); i < length; ++i)
+    {
+        std::cout << "address : " << this->collector[i] << '\n';
+    };
+};
+VOID SB_SANDBOX::objectLoader::printCollectorLength()
+{
+    std::cout << __FUNCTION__ << ":" << this->collectorLength << '\n';
+}
+

@@ -32,20 +32,31 @@ namespace SB_SANDBOX
 
     protected:
     private:
-        //TODO : 자원을 포인터로 저장하는것 까진 좋은데 이걸 편히 불러오려면 각 배열마다의 타입을 알고있어야 할 것이다.
+        //TODO : 자원의 위치를 포인터로 저장하는것 까진 좋은데 이걸 편히 불러오려면 각 배열마다의 타입을 알고있어야 할 것이다.
         INT_PTR* collector;
         WORD collectorLength;
 
         //로드할 자원을 collector에 쌓아주는 메서드
-        VOID resourceInitor();
+        template<typename _t>
+        VOID resourceControl(_t *data);
     public:
         //it calculation support by used resource detach process.
-        static UINT itStackedHowMuch;
+        //static UINT itStackedHowMuch;
 
         objectLoader();
         ~objectLoader();
 
 
+
+
+
+        //테스트용 함수
+        VOID TESTFORACTION_PRELOAD_INT(int testInteger);
+        VOID TESTFORACTION_PRELOAD_INT(char testChar);
+
+        //디버그용 함수
+        VOID printCollectorPtr();
+        VOID printCollectorLength();
         //BMP 확장자의 이미지를 로드
         VOID preloadBmpOfImage(LPCWSTR &filePath);
 
