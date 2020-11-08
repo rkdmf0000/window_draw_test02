@@ -273,6 +273,7 @@ SB_SANDBOX::objectLoader::~objectLoader()
     delete this->collector;
     std::cout << "- - Loader offline" << '\n';
 };
+
 VOID SB_SANDBOX::objectLoader::load()
 {
     std::cout << "- - Loader running on load" << '\n';
