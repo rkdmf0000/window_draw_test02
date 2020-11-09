@@ -28,8 +28,8 @@ UINT SB_SANDBOX::UIFeedback::mouseRUP = 0;
 UINT SB_SANDBOX::UIFeedback::mouseRDown = 0;
 UINT SB_SANDBOX::UIFeedback::mouseIsClicked = 0;
 
-INT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
-
+UINT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
+UINT SB_SANDBOX::client::defaultFPS = 60;
 
 LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -247,6 +247,10 @@ VOID SB_SANDBOX::client::setClientBootFn(std::function<void(SB_SANDBOX::objectLo
 //it is must be returned callable!
 std::function<void(SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getClientBootFn() {
     return this->clientBootFn;
+}
+
+VOID SB_SANDBOX::client::setActionPerFrame(INT fps) {
+    SB_SANDBOX::client::defaultFPS = fps;
 };
 
 //------------------------------------------------------------------------------------------------
@@ -266,7 +270,7 @@ SB_SANDBOX::objectLoader::objectLoader()
 {
     std::cout << "- - Loader online" << '\n';
     this->collectorLength = 0;
-    this->collector = new INT_PTR[0];
+    this->collector = new INT_PTR*[0];
 };
 SB_SANDBOX::objectLoader::~objectLoader()
 {
@@ -277,7 +281,7 @@ SB_SANDBOX::objectLoader::~objectLoader()
 
 VOID SB_SANDBOX::objectLoader::load()
 {
-    std::cout << "- - Loader running on load" << '\n';
+std::cout << "- - Loader running on load" << '\n';
 };
 
 //TODO : 이거 아직 미완성임 이거 해야함 ㅋㅋ
@@ -286,28 +290,30 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
 {
 
     unsigned int length = this->collectorLength;
-    INT_PTR *dummy = new INT_PTR[length + 1];
+    INT_PTR **dummy = new INT_PTR*[length + 1];
     if (length != 0)
     {
         for(int i(0); i < length; ++i)
         {
-            std::cout << __FUNCTION__ << " backup :" << i << "/" << reinterpret_cast<INT_PTR>(this->collector+i) << '\n';
-            dummy[i] = reinterpret_cast<INT_PTR>(this->collector+i);
+            std::cout << __FUNCTION__ << " backup :" << i << "/" << *this->collector[i] << '\n';
+            dummy[i] = this->collector[i];
         };
     }
 
     delete this->collector;
 
     this->collector = dummy;
-    this->collector[length+1] = reinterpret_cast<INT_PTR>(data);
+    std::cout << __FUNCTION__ << " new :" << length << "/" << *data << '\n';
+    this->collector[length] = data;
     ++this->collectorLength;
 
 
 }
 
-VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int testInteger)
+VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int &testInteger)
 {
-    this->resourceControl<int>(&testInteger);
+    std::cout << "INSERT FOR : " << testInteger << "/" << &testInteger << '\n';
+    this->resourceControl<INT>(&testInteger);
 }
 
 VOID SB_SANDBOX::objectLoader::printCollectorPtr() {

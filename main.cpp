@@ -11,11 +11,10 @@
 
 void testBootFn(SB_SANDBOX::objectLoader *loader)
 {
-    loader->TESTFORACTION_PRELOAD_INT(100);
-    loader->TESTFORACTION_PRELOAD_INT(200);
-    loader->TESTFORACTION_PRELOAD_INT(300);
-    loader->TESTFORACTION_PRELOAD_INT(400);
-    loader->TESTFORACTION_PRELOAD_INT(500);
+    int a = 5, b = 10;
+    loader->TESTFORACTION_PRELOAD_INT(a);
+    loader->TESTFORACTION_PRELOAD_INT(a);
+    loader->TESTFORACTION_PRELOAD_INT(b);
 
     loader->printCollectorLength();
     loader->printCollectorPtr();
