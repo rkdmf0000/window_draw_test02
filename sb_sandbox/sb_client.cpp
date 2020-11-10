@@ -270,7 +270,8 @@ SB_SANDBOX::objectLoader::objectLoader()
 {
     std::cout << "- - Loader online" << '\n';
     this->collectorLength = 0;
-    this->collector = new INT_PTR*[0];
+    this->collector = new void*[0];
+    this->collectorType.clear();
 };
 SB_SANDBOX::objectLoader::~objectLoader()
 {
@@ -284,18 +285,17 @@ VOID SB_SANDBOX::objectLoader::load()
 std::cout << "- - Loader running on load" << '\n';
 };
 
-//TODO : 이거 아직 미완성임 이거 해야함 ㅋㅋ
 template<typename _t>
 VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
 {
 
     unsigned int length = this->collectorLength;
-    INT_PTR **dummy = new INT_PTR*[length + 1];
+    void** dummy = new void*[length + 1];
     if (length != 0)
     {
         for(int i(0); i < length; ++i)
         {
-            std::cout << __FUNCTION__ << " backup :" << i << "/" << *this->collector[i] << '\n';
+            std::cout << __FUNCTION__ << " backup :" << i << "/" << this->collector[i] << '\n';
             dummy[i] = this->collector[i];
         };
     }
@@ -304,27 +304,54 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
 
     this->collector = dummy;
     std::cout << __FUNCTION__ << " new :" << length << "/" << *data << '\n';
+
     this->collector[length] = data;
     ++this->collectorLength;
 
 
 }
 
-VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int &testInteger)
-{
-    std::cout << "INSERT FOR : " << testInteger << "/" << &testInteger << '\n';
-    this->resourceControl<INT>(&testInteger);
-}
 
 VOID SB_SANDBOX::objectLoader::printCollectorPtr() {
     unsigned int length = this->collectorLength;
+
+
+
     for (int i(0); i < length; ++i)
     {
-        std::cout << "address : " << this->collector[i] << '\n';
+        unsigned int loopIterIdx(0);
+        std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL>::iterator loopTypeIter;
+        for (loopTypeIter=this->collectorType.begin();loopTypeIter!=this->collectorType.end();++loopTypeIter)
+        {
+            if (i == loopIterIdx)
+            {
+                //auto xx = this->collector[i];
+                std::cout << "address : " << static_cast<int>(*loopTypeIter) << "/" << this->collector[i] << " = " << typeid(*this->collector).name() << '\n';
+            };
+            ++loopIterIdx;
+        };
+
     };
 };
 VOID SB_SANDBOX::objectLoader::printCollectorLength()
 {
     std::cout << __FUNCTION__ << ":" << this->collectorLength << '\n';
+}
+
+
+VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int &testInteger)
+{
+    std::cout << "INSERT FOR : " << testInteger << "/" << &testInteger << '\n';
+    this->resourceControl<int>(&testInteger);
+    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
+}
+VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_CHAR(char &testChar) {
+    this->resourceControl<char>(&testChar);
+    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::CHAR);
+}
+
+VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_STRING(std::string &testString) {
+    this->resourceControl<std::string>(&testString);
+    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::STRING);
 }
 

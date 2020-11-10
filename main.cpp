@@ -5,16 +5,15 @@
 #include <sb_sandbox.h>
 
 
-//#define __STANDARD_BUTTON_CLICK_EVENT_HANDLE_NUMBER__ 0x00f0
-//#define __STANDARD_BUTTON_CLICK_UP_EVENT_HANDLE_NUMBER__ 0x00f1
-//#define __STANDARD_BUTTON_CLICK_DOWN_EVENT_HANDLE_NUMBER__ 0x00f2
-
 void testBootFn(SB_SANDBOX::objectLoader *loader)
 {
     int a = 5, b = 10;
-    loader->TESTFORACTION_PRELOAD_INT(a);
+    char ca = 'a';
+    std::string sa("wowowow");
     loader->TESTFORACTION_PRELOAD_INT(a);
     loader->TESTFORACTION_PRELOAD_INT(b);
+    loader->TESTFORACTION_PRELOAD_CHAR(ca);
+    loader->TESTFORACTION_PRELOAD_STRING(sa);
 
     loader->printCollectorLength();
     loader->printCollectorPtr();

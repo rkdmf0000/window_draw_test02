@@ -22,6 +22,21 @@
 #include <chrono>
 
 namespace SB_SANDBOX {
+
+
+
+    enum class TYPE_RESOURCE_CONTROL
+    {
+        INT,
+        UINT,
+        CHAR,
+        STRING,
+        HDC,
+        PAINTSTRUCT,
+        HBRUSH,
+        HPEN
+    };
+
     struct _SETCREATEPOSITION {
         INT x;
         INT y;
@@ -79,6 +94,9 @@ namespace SB_SANDBOX {
         ~_SETCREATEVIRTUAL() { std::cout << "(" << this << ") --VIRTUAL STRUCTURE DESTROYED" << '\n'; }
     };
 
+
+
+    typedef std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL> RESOURCE_TYPE_BASKET;
 };
 
 
