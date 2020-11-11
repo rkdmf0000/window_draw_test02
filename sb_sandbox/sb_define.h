@@ -95,7 +95,9 @@ namespace SB_SANDBOX {
     };
 
 
-
+    typedef void* RESOURCE_PTR;
+    typedef void** RESOURCE_COLLECTOR;
+    typedef std::vector<std::string> RESOURCE_NAME_BASKET;
     typedef std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL> RESOURCE_TYPE_BASKET;
 };
 

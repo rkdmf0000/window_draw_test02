@@ -144,6 +144,8 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     UINT runtime = (currentTime - this->frameBegin);
     ++this->frameCnt;
 
+    this->nextFrameMove = FALSE;
+
     //mouse vector
     this->mouseVX = this->mouseVXF - 250;
     this->mouseVY = this->mouseVYF - 250;
@@ -155,6 +157,9 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
         this->isBootedClient = TRUE;
     }
 
+
+
+
     //1 sec per tick times
     if (runtime % this->mouseVTICK == 0)
     {
@@ -164,12 +169,23 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     };
 
 
+    unsigned int fpsLoopCnt(0);
+    while(!this->nextFrameMove)
+    {
+        if (fpsLoopCnt >= this->fluidTickFrame)
+        {
+            //std::cout << this->fluidTickFrame << '\n';
+            this->nextFrameMove = TRUE;
+        }
+        ++fpsLoopCnt;
+    }
+    this->fluidTickProcess();
 
 
     //frame condition
     if (runtime > 1000)
     {
-        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----\n"
+        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----%d/%d\n"
             ,this->LIMITOVERFLOWFLAGINT
             ,this->frame
             ,(this->mouseMOVE ? 1 : 0)
@@ -177,6 +193,8 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
             ,this->mouseVX
             ,this->mouseY
             ,this->mouseVY
+            ,this->fluidTickFrame
+            ,this->maximumFps
         );
 
 
@@ -215,7 +233,9 @@ SB_SANDBOX::client::client(HINSTANCE hin) {
     this->frameEnd = 0;
     this->frameCnt = 0;
     this->frame = 0;
-
+    this->nextFrameMove = FALSE;
+    this->maximumFps = 15;
+    this->fluidTickFrame = 0;
 
     this->loader = new objectLoader();
 };
@@ -251,6 +271,25 @@ std::function<void(SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getCli
 
 VOID SB_SANDBOX::client::setActionPerFrame(INT fps) {
     SB_SANDBOX::client::defaultFPS = fps;
+}
+
+VOID SB_SANDBOX::client::fluidTickProcess() {
+    unsigned short tic(50000);
+    if (static_cast<unsigned int>(this->frame) >= this->maximumFps)
+    {
+        this->fluidTickFrame += tic;
+    }
+    else if (static_cast<unsigned int>(this->frame) < this->maximumFps)
+    {
+        if (this->fluidTickFrame > tic)
+        {
+            if (this->fluidTickFrame - tic < 0) this->fluidTickFrame = 1;
+        }
+        else
+        {
+            if (this->fluidTickFrame - tic < 0) this->fluidTickFrame -= tic;
+        };
+    }
 };
 
 //------------------------------------------------------------------------------------------------
@@ -290,7 +329,7 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
 {
 
     unsigned int length = this->collectorLength;
-    void** dummy = new void*[length + 1];
+    RESOURCE_COLLECTOR dummy = new RESOURCE_PTR[length + 1];
     if (length != 0)
     {
         for(int i(0); i < length; ++i)
@@ -314,8 +353,6 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
 
 VOID SB_SANDBOX::objectLoader::printCollectorPtr() {
     unsigned int length = this->collectorLength;
-
-
 
     for (int i(0); i < length; ++i)
     {
@@ -353,5 +390,26 @@ VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_CHAR(char &testChar) {
 VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_STRING(std::string &testString) {
     this->resourceControl<std::string>(&testString);
     this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::STRING);
+}
+
+
+VOID SB_SANDBOX::objectLoader::filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL type)
+{
+    unsigned int length = this->collectorLength;
+    for (int i(0); i < length; ++i)
+    {
+        unsigned int loopIterIdx(0);
+        std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL>::iterator loopTypeIter;
+        for (loopTypeIter=this->collectorType.begin();loopTypeIter!=this->collectorType.end();++loopTypeIter)
+        {
+            if (i == loopIterIdx && type == *loopTypeIter)
+            {
+                //results += this->collector[i];
+                std::cout << "FILTERED - address : " << static_cast<int>(*loopTypeIter) << "/" << this->collector[i] << " = " << typeid(*this->collector).name() << '\n';
+            };
+            ++loopIterIdx;
+        };
+
+    };
 }
 

@@ -9,14 +9,20 @@ void testBootFn(SB_SANDBOX::objectLoader *loader)
 {
     int a = 5, b = 10;
     char ca = 'a';
+
+    //int* basket_int;
+
+
     std::string sa("wowowow");
     loader->TESTFORACTION_PRELOAD_INT(a);
     loader->TESTFORACTION_PRELOAD_INT(b);
     loader->TESTFORACTION_PRELOAD_CHAR(ca);
     loader->TESTFORACTION_PRELOAD_STRING(sa);
 
-    loader->printCollectorLength();
-    loader->printCollectorPtr();
+    loader->filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
+
+    //loader->printCollectorLength();
+    //loader->printCollectorPtr();
 
     loader->load();
 };

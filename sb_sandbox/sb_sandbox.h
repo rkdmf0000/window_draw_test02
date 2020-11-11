@@ -32,17 +32,14 @@ namespace SB_SANDBOX
 
     protected:
     private:
-        void** collector;
+        RESOURCE_COLLECTOR collector;
         RESOURCE_TYPE_BASKET collectorType;
+        RESOURCE_NAME_BASKET collectorName;
         WORD collectorLength;
 
         //로드할 자원을 collector에 쌓아주는 메서드
         template<typename _t>
         VOID resourceControl(_t *data);
-
-        //TODO : 2020-11-1023:07:00.12  미완
-        template<typename _t>
-        _t filterCollection();
     public:
         //it calculation support by used resource detach process.
         //static UINT itStackedHowMuch;
@@ -51,7 +48,17 @@ namespace SB_SANDBOX
         ~objectLoader();
 
 
+        VOID filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL type);
 
+        INT* filterIntCollection();
+        CHAR* filterCharCollection();
+        HDC* filterHdcCollection();
+        HPEN* filterHpenCollection();
+
+        INT* filterIntCollection(LPCTSTR name);
+        CHAR* filterCharCollection(LPCTSTR name);
+        HDC* filterHdcCollection(LPCTSTR name);
+        HPEN* filterHpenCollection(LPCTSTR name);
 
 
         //테스트용 함수
@@ -116,9 +123,11 @@ namespace SB_SANDBOX
         BOOL isBootedClient = FALSE;
         static LRESULT CALLBACK privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
         VOID afterMessageDispatch();
+        VOID fluidTickProcess();
+
 
         HDC clientDC;
-
+        UINT fluidTickFrame;
     public:
 
         //open-variables
@@ -128,6 +137,8 @@ namespace SB_SANDBOX
         UINT frameEnd;
         UINT frameCnt;
         FLOAT frame;
+        UINT maximumFps;
+        BOOL nextFrameMove;
 
         SB_SANDBOX::objectLoader* loader;
 
