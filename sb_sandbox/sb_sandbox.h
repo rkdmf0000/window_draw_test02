@@ -40,6 +40,8 @@ namespace SB_SANDBOX
         //로드할 자원을 collector에 쌓아주는 메서드
         template<typename _t>
         VOID resourceControl(_t *data);
+        template<typename _t>
+        _t* resourceGrapper(LPCTSTR name);
     public:
         //it calculation support by used resource detach process.
         //static UINT itStackedHowMuch;
@@ -61,10 +63,7 @@ namespace SB_SANDBOX
         HPEN* filterHpenCollection(LPCTSTR name);
 
 
-        //테스트용 함수
-        VOID TESTFORACTION_PRELOAD_INT(int &testInteger);
-        VOID TESTFORACTION_PRELOAD_CHAR(char &testChar);
-        VOID TESTFORACTION_PRELOAD_STRING(std::string &testString);
+        VOID preloadPaintStruct(PAINTSTRUCT &ps, LPCTSTR name);
 
         //디버그용 함수
         VOID printCollectorPtr();
@@ -108,6 +107,10 @@ namespace SB_SANDBOX
     //------------------
     //DCTOOLSET
     //------------------
+    namespace STRINGTOOL
+    {
+        std::string convert(LPCTSTR str);
+    };
     namespace DCTOOLSET
     {
         VOID drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LPCTSTR text);
@@ -125,20 +128,20 @@ namespace SB_SANDBOX
         VOID afterMessageDispatch();
         VOID fluidTickProcess();
 
-
+        UINT maximumFps;
         HDC clientDC;
-        UINT fluidTickFrame;
+        INT fluidTickFrame;
     public:
 
         //open-variables
         static UINT LIMITOVERFLOWFLAGINT;
-        static UINT defaultFPS;
         UINT frameBegin;
         UINT frameEnd;
         UINT frameCnt;
         FLOAT frame;
-        UINT maximumFps;
-        BOOL nextFrameMove;
+
+
+        BOOL nextFrameMove; //unused
 
         SB_SANDBOX::objectLoader* loader;
 

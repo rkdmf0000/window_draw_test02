@@ -29,7 +29,6 @@ UINT SB_SANDBOX::UIFeedback::mouseRDown = 0;
 UINT SB_SANDBOX::UIFeedback::mouseIsClicked = 0;
 
 UINT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
-UINT SB_SANDBOX::client::defaultFPS = 60;
 
 LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -127,7 +126,7 @@ INT CALLBACK SB_SANDBOX::client::run()
     };
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0)) {
-        ++LIMITOVERFLOWFLAGINT;
+        ++SB_SANDBOX::client::LIMITOVERFLOWFLAGINT;
         TranslateMessage(&msg);
         DispatchMessage(&msg);
         this->afterMessageDispatch();
@@ -169,32 +168,25 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     };
 
 
-    unsigned int fpsLoopCnt(0);
-    while(!this->nextFrameMove)
-    {
-        if (fpsLoopCnt >= this->fluidTickFrame)
-        {
-            //std::cout << this->fluidTickFrame << '\n';
-            this->nextFrameMove = TRUE;
-        }
-        ++fpsLoopCnt;
-    }
+
+    Sleep(this->fluidTickFrame*0.001);
     this->fluidTickProcess();
+
 
 
     //frame condition
     if (runtime > 1000)
     {
-        printf("NUM: %d / FPS: %f / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d)----%d/%d\n"
+        printf("NUM: %d / FPS: (%f / %d) / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d) / Tick %d \n"
             ,this->LIMITOVERFLOWFLAGINT
-            ,this->frame
+            ,(!this->frame ? 0 : this->frame)
+            ,(!this->maximumFps ? 0 : this->maximumFps)
             ,(this->mouseMOVE ? 1 : 0)
             ,this->mouseX
             ,this->mouseVX
             ,this->mouseY
             ,this->mouseVY
-            ,this->fluidTickFrame
-            ,this->maximumFps
+            ,(this->fluidTickFrame)
         );
 
 
@@ -270,26 +262,15 @@ std::function<void(SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getCli
 }
 
 VOID SB_SANDBOX::client::setActionPerFrame(INT fps) {
-    SB_SANDBOX::client::defaultFPS = fps;
+    this->maximumFps = fps;
 }
 
 VOID SB_SANDBOX::client::fluidTickProcess() {
-    unsigned short tic(50000);
+    unsigned short tic(1);
     if (static_cast<unsigned int>(this->frame) >= this->maximumFps)
-    {
         this->fluidTickFrame += tic;
-    }
     else if (static_cast<unsigned int>(this->frame) < this->maximumFps)
-    {
-        if (this->fluidTickFrame > tic)
-        {
-            if (this->fluidTickFrame - tic < 0) this->fluidTickFrame = 1;
-        }
-        else
-        {
-            if (this->fluidTickFrame - tic < 0) this->fluidTickFrame -= tic;
-        };
-    }
+        if (this->fluidTickFrame - tic >= 0) this->fluidTickFrame -= tic;
 };
 
 //------------------------------------------------------------------------------------------------
@@ -334,7 +315,7 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
     {
         for(int i(0); i < length; ++i)
         {
-            std::cout << __FUNCTION__ << " backup :" << i << "/" << this->collector[i] << '\n';
+            //std::cout << __FUNCTION__ << " backup :" << i << "/" << this->collector[i] << '\n';
             dummy[i] = this->collector[i];
         };
     }
@@ -342,12 +323,17 @@ VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
     delete this->collector;
 
     this->collector = dummy;
-    std::cout << __FUNCTION__ << " new :" << length << "/" << *data << '\n';
+    //std::cout << __FUNCTION__ << " new :" << length << "/" << data << '\n';
 
     this->collector[length] = data;
     ++this->collectorLength;
+}
 
+template<typename _t>
+_t *SB_SANDBOX::objectLoader::resourceGrapper(LPCTSTR name)
+{
 
+    return nullptr;
 }
 
 
@@ -376,21 +362,30 @@ VOID SB_SANDBOX::objectLoader::printCollectorLength()
 }
 
 
-VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_INT(int &testInteger)
-{
-    std::cout << "INSERT FOR : " << testInteger << "/" << &testInteger << '\n';
-    this->resourceControl<int>(&testInteger);
-    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
-}
-VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_CHAR(char &testChar) {
-    this->resourceControl<char>(&testChar);
-    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::CHAR);
+
+VOID SB_SANDBOX::objectLoader::preloadPaintStruct(PAINTSTRUCT &ps, LPCTSTR name) {
+    //For not to duplicate names
+    std::vector<std::string>::iterator psIterBuff;
+    BOOL sflag(FALSE);
+    for (psIterBuff = this->collectorName.begin(); psIterBuff != this->collectorName.end(); ++psIterBuff)
+    {
+        std::string nameDummy(name);
+        std::string nameBuffer(*psIterBuff);
+        if (nameBuffer.compare(nameDummy) == 0)
+        {
+            sflag = TRUE;
+            break;
+        };
+    };
+    if (sflag != TRUE)
+    {
+        this->resourceControl<PAINTSTRUCT>(&ps);
+        this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::PAINTSTRUCT);
+        this->collectorName.push_back(name);
+    }
 }
 
-VOID SB_SANDBOX::objectLoader::TESTFORACTION_PRELOAD_STRING(std::string &testString) {
-    this->resourceControl<std::string>(&testString);
-    this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::STRING);
-}
+
 
 
 VOID SB_SANDBOX::objectLoader::filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL type)
@@ -413,3 +408,8 @@ VOID SB_SANDBOX::objectLoader::filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTRO
     };
 }
 
+
+
+std::string SB_SANDBOX::STRINGTOOL::convert(LPCTSTR str) {
+    return std::string(str);
+}

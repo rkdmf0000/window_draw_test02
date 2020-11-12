@@ -34,7 +34,8 @@ namespace SB_SANDBOX {
         HDC,
         PAINTSTRUCT,
         HBRUSH,
-        HPEN
+        HPEN,
+        RECT
     };
 
     struct _SETCREATEPOSITION {

@@ -7,22 +7,14 @@
 
 void testBootFn(SB_SANDBOX::objectLoader *loader)
 {
-    int a = 5, b = 10;
-    char ca = 'a';
 
-    //int* basket_int;
+    PAINTSTRUCT testPS;
+    loader->preloadPaintStruct(testPS, "test");
+    loader->preloadPaintStruct(testPS, "test");
 
-
-    std::string sa("wowowow");
-    loader->TESTFORACTION_PRELOAD_INT(a);
-    loader->TESTFORACTION_PRELOAD_INT(b);
-    loader->TESTFORACTION_PRELOAD_CHAR(ca);
-    loader->TESTFORACTION_PRELOAD_STRING(sa);
-
-    loader->filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
-
-    //loader->printCollectorLength();
-    //loader->printCollectorPtr();
+    //loader->filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
+    loader->printCollectorLength();
+    loader->printCollectorPtr();
 
     loader->load();
 };
@@ -45,6 +37,9 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     test_client->initApp();
     test_client->initInstance();
     test_client->setClientBootFn(testBootFn);
+
+    test_client->setActionPerFrame(60);
+
     test_client->run();
 
 
