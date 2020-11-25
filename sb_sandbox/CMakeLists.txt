@@ -21,6 +21,7 @@ set(sb_sandbox_lib_source
         sb_env.cpp
         sb_sandbox.cpp
         sb_client.cpp
+        sb_resource.cpp
         )
 #---------------------------------
 add_library(${PROJECT_NAME} STATIC ${sb_sandbox_lib_header} ${sb_sandbox_lib_source})

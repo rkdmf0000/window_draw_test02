@@ -40,11 +40,18 @@ namespace SB_SANDBOX
         //로드할 자원을 collector에 쌓아주는 메서드
         template<typename _t>
         VOID resourceControl(_t *data);
-        template<typename _t>
-        _t* resourceGrapper(LPCTSTR name);
+
+        //This method grip the start point of pointer by type and name filter
+        VOID * resourceGripper(SB_SANDBOX::TYPE_RESOURCE_CONTROL type, LPCTSTR name);
+
     public:
-        //it calculation support by used resource detach process.
-        //static UINT itStackedHowMuch;
+
+
+
+        PAINTSTRUCT* getResourcePaintStruct(LPCTSTR name);
+        HDC* getResourceHdc(LPCTSTR name);
+
+        //static UINT itStackedHowMuch; //it calculation support by used resource detach process.
 
         objectLoader();
         ~objectLoader();
@@ -63,7 +70,8 @@ namespace SB_SANDBOX
         HPEN* filterHpenCollection(LPCTSTR name);
 
 
-        VOID preloadPaintStruct(PAINTSTRUCT &ps, LPCTSTR name);
+        VOID preloadPaintStruct(PAINTSTRUCT &data, LPCTSTR name);
+        VOID preloadHdc(HDC &data, LPCTSTR name);
 
         //디버그용 함수
         VOID printCollectorPtr();
@@ -125,7 +133,7 @@ namespace SB_SANDBOX
     private:
         BOOL isBootedClient = FALSE;
         static LRESULT CALLBACK privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-        VOID afterMessageDispatch();
+        VOID afterMessageDispatch(MSG* msg);
         VOID fluidTickProcess();
 
         UINT maximumFps;
@@ -145,9 +153,9 @@ namespace SB_SANDBOX
 
         SB_SANDBOX::objectLoader* loader;
 
-        std::function<VOID(SB_SANDBOX::objectLoader* loader)>clientBootFn;
-        VOID setClientBootFn(std::function<void(SB_SANDBOX::objectLoader* loader)> fn);
-        std::function<void(SB_SANDBOX::objectLoader* loader)> getClientBootFn();
+        std::function<VOID(HWND hwnd, SB_SANDBOX::objectLoader* loader)>clientBootFn;
+        VOID setClientBootFn(std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> fn);
+        std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> getClientBootFn();
 
         VOID setActionPerFrame(INT fps=60);
 

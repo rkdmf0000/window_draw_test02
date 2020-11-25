@@ -5,16 +5,17 @@
 #include <sb_sandbox.h>
 
 
-void testBootFn(SB_SANDBOX::objectLoader *loader)
+void testBootFn(HWND hwnd, SB_SANDBOX::objectLoader *loader)
 {
 
     PAINTSTRUCT testPS;
-    loader->preloadPaintStruct(testPS, "test");
-    loader->preloadPaintStruct(testPS, "test");
+    HDC testHdc;
 
-    //loader->filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL::INT);
+    loader->preloadPaintStruct(testPS, "test");
+    loader->preloadHdc(testHdc, "test_hdc");
     loader->printCollectorLength();
     loader->printCollectorPtr();
+
 
     loader->load();
 };
@@ -32,6 +33,7 @@ INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
     std::cout << "window-startup-hInstance:" << hInstance << "(" << &hInstance << ")" << '\n';
 
     SB_SANDBOX::client* test_client = new SB_SANDBOX::client(hInstance);
+
 
 
     test_client->initApp();

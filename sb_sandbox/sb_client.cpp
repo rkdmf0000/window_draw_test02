@@ -78,6 +78,14 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
         case WM_NCCREATE:
             std::cout << "is good bitch" << '\n';
             break;
+        case WM_PAINT:
+//            PAINTSTRUCT ps;
+//            HDC hdc = BeginPaint(hWnd, &ps);
+//            std::cout << hdc << '\n';
+//            FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+3));
+            //EndPaint(hWnd, &ps);
+            break;
+
     };
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -114,6 +122,8 @@ VOID SB_SANDBOX::client::initInstance()
     ShowWindow(this->get_wndHandle(),1);
     UpdateWindow(this->get_wndHandle());
 
+    std::cout << __FUNCTION__ << ":" << this->wndHandle << '\n';
+
     this->clientDC = GetDC(this->wndHandle);
 };
 
@@ -129,13 +139,13 @@ INT CALLBACK SB_SANDBOX::client::run()
         ++SB_SANDBOX::client::LIMITOVERFLOWFLAGINT;
         TranslateMessage(&msg);
         DispatchMessage(&msg);
-        this->afterMessageDispatch();
+        this->afterMessageDispatch(&msg);
     }
     return (int) msg.wParam;
 }
 
 
-VOID SB_SANDBOX::client::afterMessageDispatch()
+VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
 {
     //get frame
     UINT currentTime = GetTickCount();
@@ -152,7 +162,7 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
 
     if (this->isBootedClient == FALSE)
     {
-        this->getClientBootFn()(this->loader); //immediately execution / 그냥 혹시 될까 싶어서 붙였는데 진짜 되넹ㅋㅋ
+        this->getClientBootFn()(this->get_wndHandle(), this->loader); //immediately execution / 그냥 혹시 될까 싶어서 붙였는데 진짜 되넹ㅋㅋ
         this->isBootedClient = TRUE;
     }
 
@@ -200,12 +210,33 @@ VOID SB_SANDBOX::client::afterMessageDispatch()
     }
 
     //top pined set
-    ::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-    ::ShowWindow(this->get_wndHandle(), SW_NORMAL);
+    //::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    //::ShowWindow(this->get_wndHandle(), SW_NORMAL);
+
+
+    if (msg->message == WM_PAINT)
+    {
+
+    };
+
 
     //force update wm_paint
     InvalidateRect(this->get_wndHandle(),NULL,TRUE);
     //UpdateWindow(this->get_wndHandle());
+
+
+
+
+
+    //someaction for test
+//    PAINTSTRUCT& testps = *this->loader->getResourcePaintStruct("test");
+//    HDC& testhdc = *this->loader->getResourceHdc("test_hdc");
+//    testhdc = BeginPaint(this->get_wndHandle(), &testps);
+//    FillRect(testhdc, &testps.rcPaint, (HBRUSH) (COLOR_WINDOW+2));
+
+    //EndPaint(this->get_wndHandle(), &testps);
+    //FillRect(testhdc, &test_rect,(HBRUSH)(COLOR_WINDOW + 1));
+
 };
 
 
@@ -252,12 +283,12 @@ HINSTANCE &SB_SANDBOX::client::get_processHandle() {
     return this->processHandle;
 }
 
-VOID SB_SANDBOX::client::setClientBootFn(std::function<void(SB_SANDBOX::objectLoader* loader)> fn) {
+VOID SB_SANDBOX::client::setClientBootFn(std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> fn) {
     this->clientBootFn = fn;
 }
 
 //it is must be returned callable!
-std::function<void(SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getClientBootFn() {
+std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> SB_SANDBOX::client::getClientBootFn() {
     return this->clientBootFn;
 }
 
@@ -281,132 +312,6 @@ VOID SB_SANDBOX::DCTOOLSET::drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LP
     SetBkColor(hdc,RGB(0,255,0));
     DrawText(hdc, text,-1,&rect,DT_LEFT);
 };
-
-//------------------------------------------------------------------------------------------------
-//class : objectLoader
-//------------------------------------------------------------------------------------------------
-
-SB_SANDBOX::objectLoader::objectLoader()
-{
-    std::cout << "- - Loader online" << '\n';
-    this->collectorLength = 0;
-    this->collector = new void*[0];
-    this->collectorType.clear();
-};
-SB_SANDBOX::objectLoader::~objectLoader()
-{
-    delete this->collector;
-    std::cout << "- - Loader offline" << '\n';
-};
-
-
-VOID SB_SANDBOX::objectLoader::load()
-{
-std::cout << "- - Loader running on load" << '\n';
-};
-
-template<typename _t>
-VOID SB_SANDBOX::objectLoader::resourceControl(_t *data)
-{
-
-    unsigned int length = this->collectorLength;
-    RESOURCE_COLLECTOR dummy = new RESOURCE_PTR[length + 1];
-    if (length != 0)
-    {
-        for(int i(0); i < length; ++i)
-        {
-            //std::cout << __FUNCTION__ << " backup :" << i << "/" << this->collector[i] << '\n';
-            dummy[i] = this->collector[i];
-        };
-    }
-
-    delete this->collector;
-
-    this->collector = dummy;
-    //std::cout << __FUNCTION__ << " new :" << length << "/" << data << '\n';
-
-    this->collector[length] = data;
-    ++this->collectorLength;
-}
-
-template<typename _t>
-_t *SB_SANDBOX::objectLoader::resourceGrapper(LPCTSTR name)
-{
-
-    return nullptr;
-}
-
-
-VOID SB_SANDBOX::objectLoader::printCollectorPtr() {
-    unsigned int length = this->collectorLength;
-
-    for (int i(0); i < length; ++i)
-    {
-        unsigned int loopIterIdx(0);
-        std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL>::iterator loopTypeIter;
-        for (loopTypeIter=this->collectorType.begin();loopTypeIter!=this->collectorType.end();++loopTypeIter)
-        {
-            if (i == loopIterIdx)
-            {
-                //auto xx = this->collector[i];
-                std::cout << "address : " << static_cast<int>(*loopTypeIter) << "/" << this->collector[i] << " = " << typeid(*this->collector).name() << '\n';
-            };
-            ++loopIterIdx;
-        };
-
-    };
-};
-VOID SB_SANDBOX::objectLoader::printCollectorLength()
-{
-    std::cout << __FUNCTION__ << ":" << this->collectorLength << '\n';
-}
-
-
-
-VOID SB_SANDBOX::objectLoader::preloadPaintStruct(PAINTSTRUCT &ps, LPCTSTR name) {
-    //For not to duplicate names
-    std::vector<std::string>::iterator psIterBuff;
-    BOOL sflag(FALSE);
-    for (psIterBuff = this->collectorName.begin(); psIterBuff != this->collectorName.end(); ++psIterBuff)
-    {
-        std::string nameDummy(name);
-        std::string nameBuffer(*psIterBuff);
-        if (nameBuffer.compare(nameDummy) == 0)
-        {
-            sflag = TRUE;
-            break;
-        };
-    };
-    if (sflag != TRUE)
-    {
-        this->resourceControl<PAINTSTRUCT>(&ps);
-        this->collectorType.push_back(SB_SANDBOX::TYPE_RESOURCE_CONTROL::PAINTSTRUCT);
-        this->collectorName.push_back(name);
-    }
-}
-
-
-
-
-VOID SB_SANDBOX::objectLoader::filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL type)
-{
-    unsigned int length = this->collectorLength;
-    for (int i(0); i < length; ++i)
-    {
-        unsigned int loopIterIdx(0);
-        std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL>::iterator loopTypeIter;
-        for (loopTypeIter=this->collectorType.begin();loopTypeIter!=this->collectorType.end();++loopTypeIter)
-        {
-            if (i == loopIterIdx && type == *loopTypeIter)
-            {
-                //results += this->collector[i];
-                std::cout << "FILTERED - address : " << static_cast<int>(*loopTypeIter) << "/" << this->collector[i] << " = " << typeid(*this->collector).name() << '\n';
-            };
-            ++loopIterIdx;
-        };
-
-    };
-}
 
 
 

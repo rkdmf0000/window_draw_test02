@@ -21,6 +21,8 @@
 
 #include <chrono>
 
+#include <memory.h>
+
 namespace SB_SANDBOX {
 
 
@@ -31,8 +33,8 @@ namespace SB_SANDBOX {
         UINT,
         CHAR,
         STRING,
-        HDC,
-        PAINTSTRUCT,
+        HDC,            //done
+        PAINTSTRUCT,    //done
         HBRUSH,
         HPEN,
         RECT
