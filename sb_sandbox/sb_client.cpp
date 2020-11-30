@@ -35,10 +35,30 @@ LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM 
     return SB_SANDBOX::client::privateWndProc(hWnd, uMsg, wParam, lParam);
 }
 
+VOID SB_SANDBOX::client::FOR_PROCEDURE__WM_PAINT(const HWND hWnd)
+{
+    if (!this->isBootedClient) return; //early return
+
+    PAINTSTRUCT& ps = *this->loader->getResourcePaintStruct("test");
+    HDC hdc = *this->loader->getResourceHdc("test_hdc");
+
+    FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+3));
+
+    std::cout << ps.hdc << " / " << hdc << '\n';
+
+    EndPaint(hWnd, &ps);
+};
+
 LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
+    SB_SANDBOX::client* client = (SB_SANDBOX::client*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
+
     switch (uMsg)
     {
+        case WM_INITDIALOG:
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)lParam);
+        break;
         //--------------------
         case WM_MOUSEMOVE:
             SB_SANDBOX::client::mouseMOVE   = TRUE;
@@ -76,14 +96,13 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
             std::cout << "it was good bitch" << '\n';
             break;
         case WM_NCCREATE:
-            std::cout << "is good bitch" << '\n';
-            break;
+        {
+            auto ist_p = (SB_SANDBOX::client*)((CREATESTRUCT*)lParam)->lpCreateParams;
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)ist_p);
+            return TRUE;
+        }
         case WM_PAINT:
-//            PAINTSTRUCT ps;
-//            HDC hdc = BeginPaint(hWnd, &ps);
-//            std::cout << hdc << '\n';
-//            FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+3));
-            //EndPaint(hWnd, &ps);
+            client->FOR_PROCEDURE__WM_PAINT(hWnd);
             break;
 
     };
@@ -118,13 +137,21 @@ VOID SB_SANDBOX::client::initApp() {
 
 VOID SB_SANDBOX::client::initInstance()
 {
-    this->wndHandle = CreateWindow(this->get_lpClassName(), this->get_lpWndName(), WS_OVERLAPPED, CW_USEDEFAULT, CW_USEDEFAULT, 500, 500, nullptr, 0, this->get_processHandle(), 0);
+    this->wndHandle = CreateWindow(
+            this->get_lpClassName(), this->get_lpWndName()
+            , WS_OVERLAPPED
+            , CW_USEDEFAULT, CW_USEDEFAULT
+            , 500, 500
+            , nullptr, 0
+            , this->get_processHandle()
+            , this
+            );
     ShowWindow(this->get_wndHandle(),1);
     UpdateWindow(this->get_wndHandle());
 
     std::cout << __FUNCTION__ << ":" << this->wndHandle << '\n';
 
-    this->clientDC = GetDC(this->wndHandle);
+    //this->clientDC = GetDC(this->wndHandle);
 };
 
 INT CALLBACK SB_SANDBOX::client::run()
@@ -178,34 +205,31 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
     };
 
 
-
-    Sleep(this->fluidTickFrame*0.001);
     this->fluidTickProcess();
-
+    Sleep(this->fluidTickFrame*0.001);
 
 
     //frame condition
     if (runtime > 1000)
     {
-        printf("NUM: %d / FPS: (%f / %d) / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d) / Tick %d \n"
-            ,this->LIMITOVERFLOWFLAGINT
-            ,(!this->frame ? 0 : this->frame)
-            ,(!this->maximumFps ? 0 : this->maximumFps)
-            ,(this->mouseMOVE ? 1 : 0)
-            ,this->mouseX
-            ,this->mouseVX
-            ,this->mouseY
-            ,this->mouseVY
-            ,(this->fluidTickFrame)
+
+        printf("NUM: %d / FPS: (%f / %d) / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d) / Tick %d / FrameDelay %f \n"
+                ,this->LIMITOVERFLOWFLAGINT
+                ,!this->frame ? 0 : this->frame
+                ,!this->maximumFps ? 0 : this->maximumFps
+                ,this->mouseMOVE ? 1 : 0
+                ,this->mouseX
+                ,this->mouseVX
+                ,this->mouseY
+                ,this->mouseVY
+                ,this->fluidTickFrame
+                , this->frameDelay
         );
-
-
 
         this->frame = (this->frameCnt*1000.0)/(currentTime - this->frameEnd);
         this->frameEnd = currentTime;
         this->frameBegin = 0;
         this->frameCnt = 0;
-
         this->mouseMOVE = FALSE;
     }
 
@@ -213,30 +237,11 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
     //::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
     //::ShowWindow(this->get_wndHandle(), SW_NORMAL);
 
+    RedrawWindow(this->get_wndHandle(),NULL,NULL,RDW_INVALIDATE | RDW_ERASE);
 
-    if (msg->message == WM_PAINT)
-    {
-
-    };
-
-
-    //force update wm_paint
-    InvalidateRect(this->get_wndHandle(),NULL,TRUE);
+    //RedrawWindow(this->get_wndHandle(), NULL, NULL, 0);
+    //InvalidateRect(this->get_wndHandle(),NULL, TRUE);
     //UpdateWindow(this->get_wndHandle());
-
-
-
-
-
-    //someaction for test
-//    PAINTSTRUCT& testps = *this->loader->getResourcePaintStruct("test");
-//    HDC& testhdc = *this->loader->getResourceHdc("test_hdc");
-//    testhdc = BeginPaint(this->get_wndHandle(), &testps);
-//    FillRect(testhdc, &testps.rcPaint, (HBRUSH) (COLOR_WINDOW+2));
-
-    //EndPaint(this->get_wndHandle(), &testps);
-    //FillRect(testhdc, &test_rect,(HBRUSH)(COLOR_WINDOW + 1));
-
 };
 
 
@@ -258,7 +263,7 @@ SB_SANDBOX::client::client(HINSTANCE hin) {
     this->frame = 0;
     this->nextFrameMove = FALSE;
     this->maximumFps = 15;
-    this->fluidTickFrame = 0;
+    this->fluidTickFrame = 24000; // 0.024sec per a frame
 
     this->loader = new objectLoader();
 };
@@ -297,11 +302,31 @@ VOID SB_SANDBOX::client::setActionPerFrame(INT fps) {
 }
 
 VOID SB_SANDBOX::client::fluidTickProcess() {
-    unsigned short tic(1);
-    if (static_cast<unsigned int>(this->frame) >= this->maximumFps)
-        this->fluidTickFrame += tic;
-    else if (static_cast<unsigned int>(this->frame) < this->maximumFps)
-        if (this->fluidTickFrame - tic >= 0) this->fluidTickFrame -= tic;
+    bool updownFlag(0);
+    unsigned short mulAvg(1);
+    float magnificationRatio;
+    const unsigned int cutCastingedFps = static_cast<unsigned int>(this->frame);
+    const unsigned int cutCastingMaxFps = static_cast<unsigned int>(this->maximumFps);
+
+    if (cutCastingMaxFps >= 0 && cutCastingedFps >= 0)
+        magnificationRatio = 100 - static_cast<float>(cutCastingMaxFps) / static_cast<float>(cutCastingedFps) * 100;
+
+    //현재프레임보다 목표 프레임이 더 높은 경우
+    if (cutCastingedFps >= this->maximumFps)
+    {
+        this->frameDelay = mulAvg = magnificationRatio >= 0 ? SB_SANDBOX::MATHTOOL::Normalization(0,100, magnificationRatio,1,30) : 1;
+        this->fluidTickFrame += mulAvg;
+    }
+    else if (cutCastingedFps < this->maximumFps)
+    {
+        updownFlag = true;
+        magnificationRatio = abs(magnificationRatio);
+        this->frameDelay = mulAvg = magnificationRatio >= 0 ? SB_SANDBOX::MATHTOOL::Normalization(0,100, magnificationRatio,1,30) : 1;
+
+        if (this->fluidTickFrame - mulAvg >= 0) this->fluidTickFrame -= (mulAvg);
+    }
+    //std::cout << (updownFlag ? "UP - " : "DO - ") << magnificationRatio << "/" << mulAvg << " == " << this->frame << '\n';
+
 };
 
 //------------------------------------------------------------------------------------------------
@@ -318,3 +343,8 @@ VOID SB_SANDBOX::DCTOOLSET::drawTextAtAFrame(HWND handle, HDC hdc, RECT rect, LP
 std::string SB_SANDBOX::STRINGTOOL::convert(LPCTSTR str) {
     return std::string(str);
 }
+
+const float SB_SANDBOX::MATHTOOL::Normalization(float v_min, float v_max, float value, float n_min, float n_max)
+{
+    return (n_max - n_min) * (value - v_min) / (v_max - v_min) + n_min;
+};

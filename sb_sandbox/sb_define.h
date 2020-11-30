@@ -23,6 +23,8 @@
 
 #include <memory.h>
 
+#include <algorithm>
+
 namespace SB_SANDBOX {
 
 

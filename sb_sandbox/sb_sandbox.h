@@ -24,6 +24,20 @@ namespace SB_SANDBOX
     public:
     };
 
+
+    //------------------
+    //Functional procedure
+    //------------------
+    class functionalPD
+    {
+
+    public:
+        static functionalPD mainInstanceHandle;
+        functionalPD& getInstance();
+
+
+    };
+
     //------------------
     //objectLoader
     //------------------
@@ -115,6 +129,11 @@ namespace SB_SANDBOX
     //------------------
     //DCTOOLSET
     //------------------
+    namespace MATHTOOL
+    {
+        //정규화
+        const float Normalization(float v_min, float v_max, float value, float n_min = 0.000f, float n_max = 1.000f);
+    };
     namespace STRINGTOOL
     {
         std::string convert(LPCTSTR str);
@@ -147,11 +166,13 @@ namespace SB_SANDBOX
         UINT frameEnd;
         UINT frameCnt;
         FLOAT frame;
-
+        FLOAT frameDelay;
 
         BOOL nextFrameMove; //unused
 
         SB_SANDBOX::objectLoader* loader;
+
+        VOID FOR_PROCEDURE__WM_PAINT(const HWND);
 
         std::function<VOID(HWND hwnd, SB_SANDBOX::objectLoader* loader)>clientBootFn;
         VOID setClientBootFn(std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> fn);
