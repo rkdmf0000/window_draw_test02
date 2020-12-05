@@ -8,22 +8,24 @@
 #include <iostream>
 #include <windows.h>
 #include <stdlib.h>
-
 #include <string.h>
 #include <tchar.h>
 #include <locale.h>
 #include <memory>
 #include <functional>
-
 #include <vector>
-
 #include <ctime>
-
 #include <chrono>
-
 #include <memory.h>
-
 #include <algorithm>
+
+
+
+
+
+#include <gdiplus.h>
+//#pragma comment(lib, "gdiplus.lib")
+
 
 namespace SB_SANDBOX {
 
@@ -31,15 +33,20 @@ namespace SB_SANDBOX {
 
     enum class TYPE_RESOURCE_CONTROL
     {
-        INT,
+        HBITMAP,            //done
+        BITMAP,             //done
+        INT,                //done
         UINT,
         CHAR,
         STRING,
-        HDC,            //done
-        PAINTSTRUCT,    //done
+        HDC,                //done
+        PAINTSTRUCT,        //done
         HBRUSH,
         HPEN,
-        RECT
+        RECT,
+        HWND,                //done
+        GDIPLUS_IMAGE,
+        GDIPLUS_GRAPHICS
     };
 
     struct _SETCREATEPOSITION {

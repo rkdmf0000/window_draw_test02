@@ -60,32 +60,39 @@ namespace SB_SANDBOX
 
     public:
 
-
-
+        //############################################
+        //############################################
+        //############################################
+        VOID preloadHwnd(HWND *data, LPCTSTR name);
+        VOID preloadInt(INT *data, LPCTSTR name);
+        VOID preloadPaintStruct(PAINTSTRUCT *data, LPCTSTR name);
+        VOID preloadHdc(HDC *data, LPCTSTR name);
+        VOID preloadHbitmap(HBITMAP *data, LPCTSTR name);
+        VOID preloadBitmap(BITMAP *data, LPCTSTR name);
+        VOID preloadGdiplusImage(Gdiplus::Image *data, LPCTSTR name);
+        VOID preloadGdiplusGraphics(Gdiplus::Graphics *data, LPCTSTR name);
+        //############################################
+        HWND* getResourceHwnd(LPCTSTR name);
+        INT* getResourceInt(LPCTSTR name);
         PAINTSTRUCT* getResourcePaintStruct(LPCTSTR name);
         HDC* getResourceHdc(LPCTSTR name);
-
+        HBITMAP* getResourceHbitmap(LPCTSTR name);
+        BITMAP* getResourceBitmap(LPCTSTR name);
+        Gdiplus::Image* getResourceGdiplusImage(LPCTSTR name);
+        Gdiplus::Graphics* getResourceGdiplusGraphics(LPCTSTR name);
+        //############################################
+        //############################################
+        //############################################
         //static UINT itStackedHowMuch; //it calculation support by used resource detach process.
 
         objectLoader();
         ~objectLoader();
 
-
         VOID filterCollection(SB_SANDBOX::TYPE_RESOURCE_CONTROL type);
 
-        INT* filterIntCollection();
-        CHAR* filterCharCollection();
-        HDC* filterHdcCollection();
-        HPEN* filterHpenCollection();
-
-        INT* filterIntCollection(LPCTSTR name);
-        CHAR* filterCharCollection(LPCTSTR name);
-        HDC* filterHdcCollection(LPCTSTR name);
-        HPEN* filterHpenCollection(LPCTSTR name);
 
 
-        VOID preloadPaintStruct(PAINTSTRUCT &data, LPCTSTR name);
-        VOID preloadHdc(HDC &data, LPCTSTR name);
+
 
         //디버그용 함수
         VOID printCollectorPtr();
@@ -168,31 +175,43 @@ namespace SB_SANDBOX
         FLOAT frame;
         FLOAT frameDelay;
 
+        Gdiplus::GdiplusStartupInput gdipStartupInput;
+        ULONG_PTR gdipToken;
+
         BOOL nextFrameMove; //unused
 
         SB_SANDBOX::objectLoader* loader;
 
+        //for_window_message
         VOID FOR_PROCEDURE__WM_PAINT(const HWND);
 
+        //boot_fn
         std::function<VOID(HWND hwnd, SB_SANDBOX::objectLoader* loader)>clientBootFn;
         VOID setClientBootFn(std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> fn);
         std::function<void(HWND hwnd, SB_SANDBOX::objectLoader* loader)> getClientBootFn();
 
+        //for_controls_frame
         VOID setActionPerFrame(INT fps=60);
 
+        //for_win_procedire
         static LRESULT CALLBACK publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+        //for_process_info_security
         LPCTSTR& get_lpClassName();
         LPCTSTR& get_lpWndName();
         HWND& get_wndHandle();
         HINSTANCE& get_processHandle();
 
+
+        //construction and else
         explicit client(HINSTANCE hin);
         ~client();
 
+        //for_inits_app
         VOID initApp();
         VOID initInstance();
         INT WINAPI run();
-
+        VOID initGdiplusStartup();
     };
 };
 

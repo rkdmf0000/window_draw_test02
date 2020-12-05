@@ -1,6 +1,9 @@
 //
 // Created by my_fl on 2020-10-13.
 //
+
+#define TEST_IMAGE  BITMAP  "E:\develop_project\cpp\test\window_draw_test02\cmake-build-debug\image.bmp"
+
 #include "sb_sandbox.h"
 
 //------------------------------------------------------------------------------------------------
@@ -32,6 +35,29 @@ UINT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
 
 LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+
+    static HBITMAP bmpSource = NULL;
+    static HDC hdcSource = NULL;
+
+    PAINTSTRUCT ps;
+    HDC hdcDestination;
+
+    if (uMsg == WM_CREATE)
+    {
+        Gdiplus::Image test(L"asd");
+        bmpSource = (HBITMAP)LoadImage(NULL, "image.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+        hdcSource = CreateCompatibleDC(GetDC(0));
+        SelectObject(hdcSource, bmpSource);
+        return 0;
+    }
+    else if (uMsg == WM_PAINT)
+    {
+        hdcDestination = BeginPaint(hWnd, &ps);
+        BitBlt(hdcDestination, 0, 0, 500, 500, hdcSource, 0, 0, SRCCOPY);
+        EndPaint(hWnd, &ps);
+        return 0;
+    }
+
     return SB_SANDBOX::client::privateWndProc(hWnd, uMsg, wParam, lParam);
 }
 
@@ -39,14 +65,47 @@ VOID SB_SANDBOX::client::FOR_PROCEDURE__WM_PAINT(const HWND hWnd)
 {
     if (!this->isBootedClient) return; //early return
 
-    PAINTSTRUCT& ps = *this->loader->getResourcePaintStruct("test");
-    HDC hdc = *this->loader->getResourceHdc("test_hdc");
+    //background painting
+    //PAINTSTRUCT& test_ps = *this->loader->getResourcePaintStruct("test");
+    //HDC& test_hdc = *this->loader->getResourceHdc("test_hdc");
+    //test_hdc = BeginPaint(hWnd, &test_ps);
 
-    FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW+3));
+    //FillRect (test_hdc, &test_ps.rcPaint, (HBRUSH) (COLOR_WINDOW + 3) );
 
-    std::cout << ps.hdc << " / " << hdc << '\n';
+    //bitmap painting
+    // int imagedraw_bx, imagedraw_by;
+//    HDC& imagedraw_hdc = *this->loader->getResourceHdc("test_imagehdc");
+//    HBITMAP& imagedraw_himage = *this->loader->getResourceHbitmap("test_himage");
+//    HBITMAP& imagedraw_holdimage = *this->loader->getResourceHbitmap("test_holdimage");
+//    BITMAP& imagedraw_bit = *this->loader->getResourceBitmap("test_bit");
+//    imagedraw_hdc = CreateCompatibleDC(test_hdc);
+//    imagedraw_himage = (HBITMAP) LoadImage(NULL, TEXT("./image.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+//    imagedraw_holdimage = (HBITMAP) SelectObject(imagedraw_hdc, imagedraw_himage);
+//    GetObject(imagedraw_himage, sizeof(BITMAP), &imagedraw_bit);
+//    imagedraw_bx = imagedraw_bit.bmWidth;
+//    imagedraw_by = imagedraw_bit.bmHeight;
+//    BitBlt(test_hdc, 50, 50, imagedraw_bx, imagedraw_by, imagedraw_hdc, 0, 0, SRCCOPY);
+//    SelectObject(imagedraw_hdc, imagedraw_holdimage);
+//    DeleteObject(imagedraw_himage);
+//    DeleteObject(imagedraw_hdc);
 
-    EndPaint(hWnd, &ps);
+    //backgorund_painting - end
+    //EndPaint(hWnd, &test_ps);
+
+    HDC& test_hdc = *this->loader->getResourceHdc("test_hdc");
+    Gdiplus::Image& test_image = *this->loader->getResourceGdiplusImage("test_image");
+    Gdiplus::Graphics& test_graphics = *this->loader->getResourceGdiplusGraphics("test_graphics");
+    //Gdiplus::Graphics gps(test_hdc);
+    test_graphics.DrawImage(&test_image, 10, 10);
+
+
+//    HDC hdc = GetDC(m_hWnd);
+//    PatBlt(m_hBackBuffer, 0, 0, D_SCREEN_WIDTH, D_SCREEN_HEIGHT, BLACKNESS);
+//
+//
+//    BitBlt(m_hDC, 0, 0, D_SCREEN_WIDTH, D_SCREEN_HEIGHT, m_hBackBuffer, 0, 0, SRCCOPY);
+//    ReleaseDC(m_hWnd, m_hDC);
+
 };
 
 LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -56,9 +115,6 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
 
     switch (uMsg)
     {
-        case WM_INITDIALOG:
-            SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)lParam);
-        break;
         //--------------------
         case WM_MOUSEMOVE:
             SB_SANDBOX::client::mouseMOVE   = TRUE;
@@ -91,9 +147,8 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
         case WM_MOUSEWHEEL:
             break;
         //--------------------
-
         case WM_CREATE:
-            std::cout << "it was good bitch" << '\n';
+
             break;
         case WM_NCCREATE:
         {
@@ -102,6 +157,7 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
             return TRUE;
         }
         case WM_PAINT:
+
             client->FOR_PROCEDURE__WM_PAINT(hWnd);
             break;
 
@@ -189,10 +245,16 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
 
     if (this->isBootedClient == FALSE)
     {
-        this->getClientBootFn()(this->get_wndHandle(), this->loader); //immediately execution / 그냥 혹시 될까 싶어서 붙였는데 진짜 되넹ㅋㅋ
+        this->getClientBootFn()(this->get_wndHandle(), this->loader); //immediately execution
         this->isBootedClient = TRUE;
     }
 
+
+//    if (this->isBootedClient)
+//    {
+//        int* inttest = loader->getResourceInt("testint");
+//        std::cout << "--------------------" << *inttest << '\n';
+//    }
 
 
 
@@ -327,6 +389,10 @@ VOID SB_SANDBOX::client::fluidTickProcess() {
     }
     //std::cout << (updownFlag ? "UP - " : "DO - ") << magnificationRatio << "/" << mulAvg << " == " << this->frame << '\n';
 
+}
+
+VOID SB_SANDBOX::client::initGdiplusStartup() {
+    Gdiplus::GdiplusStartup(&this->gdipToken, &this->gdipStartupInput, NULL);
 };
 
 //------------------------------------------------------------------------------------------------

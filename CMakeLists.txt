@@ -15,6 +15,11 @@ IF(FALSE)
     ELSE()
     message(STATUS "NOT USING A UNICODE")
 ENDIF()
+
+find_library(GDIPLUS_LIBRARY NAMES libgdiplus gdiplus REQUIRED)
+
+
+
 #---------------------------------
 message(STATUS "Set library prefix")
 set( CMAKE_STATIC_LIBRARY_PREFIX "" )
@@ -40,6 +45,10 @@ add_executable(${PROJECT_NAME} ${env_mainline_program} ${env_mainprogram_header}
 #---------------------------------
 target_include_directories(${PROJECT_NAME} PRIVATE ${option_sb_sandbox_lib_header_directory})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${option_sb_sandbox_lib_name})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE gdiplus) #GDIPLUS - LINK
+
+
 message(STATUS ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_header_directory})
 message(STATUS ${PROJECT_NAME}--PRIVATE--${option_sb_sandbox_lib_name})
 #---------------------------------
