@@ -163,7 +163,6 @@ namespace SB_SANDBOX
         VOID fluidTickProcess();
 
         UINT maximumFps;
-        HDC clientDC;
         INT fluidTickFrame;
     public:
 

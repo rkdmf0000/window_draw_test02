@@ -1,81 +1,53 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #pragma execution_character_set( "utf-8" )
-
-
 #include <sb_sandbox.h>
-
-
+//#include <afxres.h>
 void testBootFn(HWND hWnd, SB_SANDBOX::objectLoader *loader)
 {
 
-
-    HWND* mainHwnd = new HWND(hWnd);
-    PAINTSTRUCT* testPS = new PAINTSTRUCT;
-    HDC* testHdc = new HDC;
-    *testHdc = GetDC(hWnd);
-    ReleaseDC(hWnd, *testHdc);
+    std::cout << "윈도우 타이틀이 안나옴.. ㄹㅇ 극혐" << '\n';
 
 
-    Gdiplus::Graphics* test_graphics = new Gdiplus::Graphics(*testHdc);
-    Gdiplus::Image* test_image = new Gdiplus::Image(L"./image.bmp");
+    HDC* x_hdc = new HDC(GetDC(hWnd));
+    HDC* x_c_hdc = new HDC(CreateCompatibleDC(*x_hdc));
+    HBITMAP* x_hbitmap = new HBITMAP(CreateCompatibleBitmap(*x_hdc, 500, 500));
+    SelectObject(*x_c_hdc, (HBITMAP)*x_hbitmap);
+    Gdiplus::Graphics* x_gp = new Gdiplus::Graphics(*x_hdc);
 
-    loader->preloadHwnd(mainHwnd, "main_handle");
-    loader->preloadPaintStruct(testPS, "test");
-    loader->preloadHdc(testHdc, "test_hdc");
+    Gdiplus::Image* x_img = new Gdiplus::Image(L".\\image\\test1.bmp");
+    Gdiplus::Image* x_img2 = new Gdiplus::Image(L".\\image\\blood-sample.png");
 
-    loader->preloadGdiplusImage(test_image, "test_image");
-    loader->preloadGdiplusGraphics(test_graphics, "test_graphics");
+    loader->preloadHdc(x_c_hdc, "t_mem_hdc");
+    loader->preloadGdiplusGraphics(x_gp, "t_gp");
+    loader->preloadGdiplusImage(x_img, "t_img");
+    loader->preloadGdiplusImage(x_img2, "t_img2");
 
     loader->printCollectorLength();
     loader->printCollectorPtr();
-
-
     loader->load();
 };
-
-
-//bool standardization(std::vector<double> *v)
-//{
-//    double max_value = *(std::max_element(v->begin(), v->end()));
-//    double min_value = *(std::min_element(v->begin(), v->end()));
-//    double range = 1.0/(max_value - min_value);
-//    std::vector<double>::iterator pos = v->begin();
-//    std::vector<double>::iterator end = v->end();
-//
-//    for(; pos != end; pos++){
-//
-//        *pos = (*pos - min_value)*range;
-//
-//    }
-//    return true;
-//}
-
-
-
-
-
 INT CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, INT nCmdShow) {
     AllocConsole();
-    SetConsoleOutputCP(65001);
     freopen("CONIN$", "r", stdin);
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
+    SetConsoleOutputCP(65001);
 
+    std::cout << "-- - - - - --" << '\n';
+    std::cout << (HBITMAP) LoadImage(hInstance, TEXT("image\\test1.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION) << '\n';
+    DWORD lastError = GetLastError();
+
+
+    std::cout << lastError << '\n';
+    std::cout << "-- - - - - --" << '\n';
     SB_SANDBOX::client* test_client = new SB_SANDBOX::client(hInstance);
-
     test_client->initGdiplusStartup();
     test_client->initApp();
     test_client->initInstance();
     test_client->setClientBootFn(testBootFn);
-    test_client->setActionPerFrame(60);
+    test_client->setActionPerFrame(15);
     test_client->run();
-
+    test_client->loader->cutAll();
     delete test_client;
     return 0;
 };
-
-
-
-
-
-

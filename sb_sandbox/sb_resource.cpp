@@ -360,4 +360,8 @@ Gdiplus::Graphics *SB_SANDBOX::objectLoader::getResourceGdiplusGraphics(LPCTSTR 
     return returnValuePtr;
 }
 
+VOID SB_SANDBOX::objectLoader::cutAll() {
+    std::cout << "CUTALL!" << '\n';
+};
+
 

@@ -19,12 +19,10 @@
 #include <memory.h>
 #include <algorithm>
 
-
-
-
-
 #include <gdiplus.h>
 //#pragma comment(lib, "gdiplus.lib")
+
+//#include <afxwin.h>
 
 
 namespace SB_SANDBOX {
@@ -33,20 +31,20 @@ namespace SB_SANDBOX {
 
     enum class TYPE_RESOURCE_CONTROL
     {
-        HBITMAP,            //done
-        BITMAP,             //done
-        INT,                //done
+        HBITMAP,           //done
+        BITMAP,            //done
+        INT,               //done
         UINT,
         CHAR,
         STRING,
-        HDC,                //done
-        PAINTSTRUCT,        //done
+        HDC,               //done
+        PAINTSTRUCT,       //done
         HBRUSH,
         HPEN,
         RECT,
-        HWND,                //done
-        GDIPLUS_IMAGE,
-        GDIPLUS_GRAPHICS
+        HWND,               //done
+        GDIPLUS_IMAGE,      //done
+        GDIPLUS_GRAPHICS    //done
     };
 
     struct _SETCREATEPOSITION {
@@ -112,6 +110,30 @@ namespace SB_SANDBOX {
     typedef std::vector<std::string> RESOURCE_NAME_BASKET;
     typedef std::vector<SB_SANDBOX::TYPE_RESOURCE_CONTROL> RESOURCE_TYPE_BASKET;
 };
+
+
+
+
+
+
+
+#define D_GAME_NAME			"API Sample"	///< 어플리케이션의 이름
+#define D_SCREEN_WIDTH		500			///< 어플리케이션의 최대 가로 값
+#define D_SCREEN_HEIGHT		500				///< 어플리케이션의 최대 세로 값
+#define D_WINDOW_WIDTH		GetSystemMetrics(SM_CXSCREEN)		//!< 윈도우의 가로 값
+#define D_WINDOW_HEIGHT		GetSystemMetrics(SM_CYSCREEN)		//!< 윈도우의 세로 값
+#define D_SCREEN_XPOS		D_WINDOW_WIDTH	/ 2 - D_SCREEN_WIDTH  / 2	//!< 윈도우의 위치 (가로) 값
+#define D_SCREEN_YPOS		D_WINDOW_HEIGHT	/ 2 - D_SCREEN_HEIGHT / 2	//!< 윈도우의 위치 (세로) 값
+#define SAFE_DELETE(p)	\
+{ \
+	do					\
+	{					\
+		delete p;		\
+		p = NULL;		\
+	}while (0);			\
+}
+
+
 
 
 

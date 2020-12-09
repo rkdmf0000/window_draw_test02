@@ -35,84 +35,11 @@ UINT SB_SANDBOX::client::LIMITOVERFLOWFLAGINT = 0;
 
 LRESULT CALLBACK SB_SANDBOX::client::publicWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
-    static HBITMAP bmpSource = NULL;
-    static HDC hdcSource = NULL;
-
-    PAINTSTRUCT ps;
-    HDC hdcDestination;
-
-    if (uMsg == WM_CREATE)
-    {
-        Gdiplus::Image test(L"asd");
-        bmpSource = (HBITMAP)LoadImage(NULL, "image.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-        hdcSource = CreateCompatibleDC(GetDC(0));
-        SelectObject(hdcSource, bmpSource);
-        return 0;
-    }
-    else if (uMsg == WM_PAINT)
-    {
-        hdcDestination = BeginPaint(hWnd, &ps);
-        BitBlt(hdcDestination, 0, 0, 500, 500, hdcSource, 0, 0, SRCCOPY);
-        EndPaint(hWnd, &ps);
-        return 0;
-    }
-
     return SB_SANDBOX::client::privateWndProc(hWnd, uMsg, wParam, lParam);
 }
-
-VOID SB_SANDBOX::client::FOR_PROCEDURE__WM_PAINT(const HWND hWnd)
-{
-    if (!this->isBootedClient) return; //early return
-
-    //background painting
-    //PAINTSTRUCT& test_ps = *this->loader->getResourcePaintStruct("test");
-    //HDC& test_hdc = *this->loader->getResourceHdc("test_hdc");
-    //test_hdc = BeginPaint(hWnd, &test_ps);
-
-    //FillRect (test_hdc, &test_ps.rcPaint, (HBRUSH) (COLOR_WINDOW + 3) );
-
-    //bitmap painting
-    // int imagedraw_bx, imagedraw_by;
-//    HDC& imagedraw_hdc = *this->loader->getResourceHdc("test_imagehdc");
-//    HBITMAP& imagedraw_himage = *this->loader->getResourceHbitmap("test_himage");
-//    HBITMAP& imagedraw_holdimage = *this->loader->getResourceHbitmap("test_holdimage");
-//    BITMAP& imagedraw_bit = *this->loader->getResourceBitmap("test_bit");
-//    imagedraw_hdc = CreateCompatibleDC(test_hdc);
-//    imagedraw_himage = (HBITMAP) LoadImage(NULL, TEXT("./image.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-//    imagedraw_holdimage = (HBITMAP) SelectObject(imagedraw_hdc, imagedraw_himage);
-//    GetObject(imagedraw_himage, sizeof(BITMAP), &imagedraw_bit);
-//    imagedraw_bx = imagedraw_bit.bmWidth;
-//    imagedraw_by = imagedraw_bit.bmHeight;
-//    BitBlt(test_hdc, 50, 50, imagedraw_bx, imagedraw_by, imagedraw_hdc, 0, 0, SRCCOPY);
-//    SelectObject(imagedraw_hdc, imagedraw_holdimage);
-//    DeleteObject(imagedraw_himage);
-//    DeleteObject(imagedraw_hdc);
-
-    //backgorund_painting - end
-    //EndPaint(hWnd, &test_ps);
-
-    HDC& test_hdc = *this->loader->getResourceHdc("test_hdc");
-    Gdiplus::Image& test_image = *this->loader->getResourceGdiplusImage("test_image");
-    Gdiplus::Graphics& test_graphics = *this->loader->getResourceGdiplusGraphics("test_graphics");
-    //Gdiplus::Graphics gps(test_hdc);
-    test_graphics.DrawImage(&test_image, 10, 10);
-
-
-//    HDC hdc = GetDC(m_hWnd);
-//    PatBlt(m_hBackBuffer, 0, 0, D_SCREEN_WIDTH, D_SCREEN_HEIGHT, BLACKNESS);
-//
-//
-//    BitBlt(m_hDC, 0, 0, D_SCREEN_WIDTH, D_SCREEN_HEIGHT, m_hBackBuffer, 0, 0, SRCCOPY);
-//    ReleaseDC(m_hWnd, m_hDC);
-
-};
-
 LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
     SB_SANDBOX::client* client = (SB_SANDBOX::client*) GetWindowLongPtr(hWnd, GWLP_USERDATA);
-
     switch (uMsg)
     {
         //--------------------
@@ -157,30 +84,49 @@ LRESULT CALLBACK SB_SANDBOX::client::privateWndProc(HWND hWnd, UINT uMsg, WPARAM
             return TRUE;
         }
         case WM_PAINT:
-
-            client->FOR_PROCEDURE__WM_PAINT(hWnd);
+            //client->FOR_PROCEDURE__WM_PAINT(hWnd);
             break;
-
+        case WM_QUIT:
+        case WM_DESTROY:
+            std::cout << "BYE~BYE~" << '\n';
+            PostQuitMessage(1);
     };
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
+
+
+VOID SB_SANDBOX::client::FOR_PROCEDURE__WM_PAINT(const HWND hWnd)
+{
+    if (!this->isBootedClient) return; //early return
+
+    HDC& mem_hdc = *this->loader->getResourceHdc("t_mem_hdc");
+    Gdiplus::Graphics& gp = *this->loader->getResourceGdiplusGraphics("t_gp");
+    Gdiplus::Image& img = *this->loader->getResourceGdiplusImage("t_img");
+    Gdiplus::Image& img2 = *this->loader->getResourceGdiplusImage("t_img2");
+
+    PatBlt(mem_hdc, 50, 50, 50, 50, BLACKNESS);
+    gp.DrawImage(&img, 10, 10);
+    gp.DrawImage(&img2, 10, 10, 100, 50);
+    BitBlt(mem_hdc, 100, 100, 50, 50, mem_hdc, 0, 0, SRCCOPY);
+    ReleaseDC(hWnd, mem_hdc);
+
+};
 
 VOID SB_SANDBOX::client::initApp() {
 
     WNDCLASSEX TESTWNDCLASS;
     TESTWNDCLASS.cbSize = sizeof(WNDCLASSEX);
     TESTWNDCLASS.style = CS_HREDRAW | CS_VREDRAW;
-    TESTWNDCLASS.lpfnWndProc = this->publicWndProc;
+    TESTWNDCLASS.lpfnWndProc = (WNDPROC)this->publicWndProc;
     TESTWNDCLASS.cbClsExtra = 0;
     TESTWNDCLASS.cbWndExtra = 0;
     TESTWNDCLASS.hInstance = this->get_processHandle();
     TESTWNDCLASS.hIcon = LoadIcon(this->get_processHandle(), IDI_APPLICATION);
     TESTWNDCLASS.hCursor = LoadCursor(nullptr, IDC_ARROW);
-    TESTWNDCLASS.hbrBackground = (HBRUSH) (COLOR_WINDOW + 1);
+    TESTWNDCLASS.hbrBackground = (HBRUSH) (COLOR_WINDOW + 3);
     TESTWNDCLASS.lpszMenuName = nullptr;
     TESTWNDCLASS.lpszClassName = this->get_lpClassName();
     TESTWNDCLASS.hIconSm = LoadIcon(TESTWNDCLASS.hInstance, IDI_APPLICATION);
-
     if (!RegisterClassEx(&TESTWNDCLASS)) {
         MessageBox(nullptr,
                    _T("Call to RegisterClassEx failed!"),
@@ -189,25 +135,64 @@ VOID SB_SANDBOX::client::initApp() {
     } else {
         std::cout << "Window register class successful!" << '\n';
     };
+
+//    WNDCLASS WndClass;
+//    WndClass.cbClsExtra=0;
+//    WndClass.cbWndExtra=0;
+//    WndClass.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
+//    WndClass.hCursor=LoadCursor(NULL,IDC_ARROW);
+//    WndClass.hIcon=LoadIcon(NULL,IDI_APPLICATION);
+//    WndClass.hInstance=this->get_processHandle();
+//    WndClass.lpfnWndProc=(WNDPROC)this->publicWndProc;
+//    WndClass.lpszClassName=this->get_lpClassName();
+//    WndClass.lpszMenuName=NULL;
+//    WndClass.style=CS_HREDRAW | CS_VREDRAW;
+//    if (!RegisterClass(&WndClass)) {
+//        MessageBox(nullptr,
+//                   _T("Call to RegisterClassEx failed!"),
+//                   _T("Windows Desktop"),
+//                   0);
+//    } else {
+//        std::cout << "Window register class successful!" << '\n';
+//    };
+
+
+
 };
 
 VOID SB_SANDBOX::client::initInstance()
 {
+    std::cout << "testdata" << " - - - " << this->get_lpWndName() << '\n';
+
     this->wndHandle = CreateWindow(
             this->get_lpClassName(), this->get_lpWndName()
-            , WS_OVERLAPPED
-            , CW_USEDEFAULT, CW_USEDEFAULT
+            , WS_OVERLAPPEDWINDOW
+            , 0, 0
             , 500, 500
             , nullptr, 0
             , this->get_processHandle()
             , this
             );
+
+//    this->wndHandle = CreateWindowEx(
+//            0,                              // Optional window styles.
+//            this->get_lpClassName(),        // Window class
+//            "Learn to Program Windows",    // Window text
+//            WS_OVERLAPPEDWINDOW,            // Window style
+//
+//            // Size and position
+//            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+//
+//            NULL,                       // Parent window
+//            NULL,                       // Menu
+//            this->get_processHandle(),  // Instance handle
+//            this                        // Additional application data
+//    );
+
+
     ShowWindow(this->get_wndHandle(),1);
     UpdateWindow(this->get_wndHandle());
-
     std::cout << __FUNCTION__ << ":" << this->wndHandle << '\n';
-
-    //this->clientDC = GetDC(this->wndHandle);
 };
 
 INT CALLBACK SB_SANDBOX::client::run()
@@ -218,11 +203,18 @@ INT CALLBACK SB_SANDBOX::client::run()
         return 0;
     };
     MSG msg;
-    while (GetMessage(&msg, nullptr, 0, 0)) {
-        ++SB_SANDBOX::client::LIMITOVERFLOWFLAGINT;
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-        this->afterMessageDispatch(&msg);
+    while (1)
+    {
+        if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))		//!< 메시지가 들어왔을 경우
+        {
+            if (msg.message == WM_QUIT) break;
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        else                                                //!< 메시지가 들어오지 않았을 경우
+        {
+            this->afterMessageDispatch(&msg);
+        }
     }
     return (int) msg.wParam;
 }
@@ -235,46 +227,30 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
     this->frameBegin = (this->frameBegin == 0 ? GetTickCount() : this->frameBegin);
     UINT runtime = (currentTime - this->frameBegin);
     ++this->frameCnt;
-
     this->nextFrameMove = FALSE;
-
     //mouse vector
     this->mouseVX = this->mouseVXF - 250;
     this->mouseVY = this->mouseVYF - 250;
-
-
     if (this->isBootedClient == FALSE)
     {
         this->getClientBootFn()(this->get_wndHandle(), this->loader); //immediately execution
         this->isBootedClient = TRUE;
     }
-
-
-//    if (this->isBootedClient)
-//    {
-//        int* inttest = loader->getResourceInt("testint");
-//        std::cout << "--------------------" << *inttest << '\n';
-//    }
-
-
-
     //1 sec per tick times
     if (runtime % this->mouseVTICK == 0)
     {
-
         this->mouseVXF = this->mouseX;
         this->mouseVYF = this->mouseY;
     };
 
-
     this->fluidTickProcess();
     Sleep(this->fluidTickFrame*0.001);
 
+    this->FOR_PROCEDURE__WM_PAINT(this->get_wndHandle());
 
     //frame condition
     if (runtime > 1000)
     {
-
         printf("NUM: %d / FPS: (%f / %d) / MOUSE(%d) POS: x: %d(v %d), y: %d(v %d) / Tick %d / FrameDelay %f \n"
                 ,this->LIMITOVERFLOWFLAGINT
                 ,!this->frame ? 0 : this->frame
@@ -296,14 +272,10 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
     }
 
     //top pined set
-    //::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-    //::ShowWindow(this->get_wndHandle(), SW_NORMAL);
+    ::SetWindowPos(this->get_wndHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_DRAWFRAME | SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+    ::ShowWindow(this->get_wndHandle(), SW_NORMAL);
 
-    RedrawWindow(this->get_wndHandle(),NULL,NULL,RDW_INVALIDATE | RDW_ERASE);
 
-    //RedrawWindow(this->get_wndHandle(), NULL, NULL, 0);
-    //InvalidateRect(this->get_wndHandle(),NULL, TRUE);
-    //UpdateWindow(this->get_wndHandle());
 };
 
 
@@ -312,8 +284,8 @@ VOID SB_SANDBOX::client::afterMessageDispatch(MSG* msg)
 //class : client
 //------------------------------------------------------------------------------------------------
 SB_SANDBOX::client::client(HINSTANCE hin) {
-    LPCTSTR szWindowClass   = _T("DesktopApp");
-    LPCTSTR szTitle         = _T("Window game interface test");
+    LPCTSTR szWindowClass   = "DesktopApp";
+    LPCTSTR szTitle         = "Window game interface test";
 
     this->lpClassName = szWindowClass;
     this->lpWndName = szTitle;
@@ -325,7 +297,7 @@ SB_SANDBOX::client::client(HINSTANCE hin) {
     this->frame = 0;
     this->nextFrameMove = FALSE;
     this->maximumFps = 15;
-    this->fluidTickFrame = 24000; // 0.024sec per a frame
+    this->fluidTickFrame = 0; // 0.024sec per a frame
 
     this->loader = new objectLoader();
 };
@@ -387,8 +359,6 @@ VOID SB_SANDBOX::client::fluidTickProcess() {
 
         if (this->fluidTickFrame - mulAvg >= 0) this->fluidTickFrame -= (mulAvg);
     }
-    //std::cout << (updownFlag ? "UP - " : "DO - ") << magnificationRatio << "/" << mulAvg << " == " << this->frame << '\n';
-
 }
 
 VOID SB_SANDBOX::client::initGdiplusStartup() {
